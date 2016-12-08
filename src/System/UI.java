@@ -7,7 +7,8 @@ public class UI {
 
 	private Scanner input = new Scanner(System.in);
 	private Facility facility;
-	private ArrayList<Room> currentAvailability;
+	private ArrayList<Room> currentListOfAvailRooms;
+	private boolean availabilityChecked = false;
 	public static void main(String[] args) {
 		UI ui = new UI();
 		ui.runMenu();
@@ -21,7 +22,7 @@ public class UI {
 				System.out.println("  Medical Council Menu");
 				System.out.println("  ---------");
 				System.out.println("  1) Check room availability");
-				System.out.println("  2) Add a General Doctor");
+				System.out.println("  2) Make Reservation");
 				System.out.println("  3) Add an Intern");
 				System.out.println("  4) Delete a Doctor");
 				System.out.println("  5) Edit Doctor's Details");
@@ -106,17 +107,17 @@ public class UI {
 					}
 				} while (!correct);
 				if((endDay >= startDay && endMonth == startMonth) || endMonth > startMonth) {
-					correct = true;
 					try {
-						currentAvailability = facility.checkAvailability(new Date(startDay, startMonth, 2017), new Date(endDay, endMonth, 2017));
-						if(currentAvailability.size() > 0) {
-							System.out.println(currentAvailability.size() + " rooms available");
+						currentListOfAvailRooms = facility.checkAvailability(new Date(startDay, startMonth, 2017), new Date(endDay, endMonth, 2017));
+						if(currentListOfAvailRooms.size() > 0) {
+							System.out.println(currentListOfAvailRooms.size() + " rooms available");
 						}
+						setAvailabilityChecked(true);
 					} catch (InputMismatchException e){
 						System.out.println("Incorrect date(s)");
 					}
 				} else {
-					correct = false;
+					System.out.println("Incorrect dates were provided");
 				}
 				
 				break;
@@ -169,5 +170,19 @@ public class UI {
 		// the user chose option 0, so exit the program
 		System.out.println("Exiting... bye");
 		System.exit(0);
+	}
+
+	/**
+	 * @return the availabilityChecked
+	 */
+	public boolean isAvailabilityChecked() {
+		return availabilityChecked;
+	}
+
+	/**
+	 * @param availabilityChecked the availabilityChecked to set
+	 */
+	public void setAvailabilityChecked(boolean availabilityChecked) {
+		this.availabilityChecked = availabilityChecked;
 	}
 }

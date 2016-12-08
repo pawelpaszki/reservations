@@ -50,5 +50,6 @@ public class FacilityTest {
 		assertTrue(facility.checkAvailability(new Date(2,1,2017), new Date(30,1,2017)).size() == 2);
 		assertTrue(facility.checkAvailability(new Date(2,1,2017), new Date(28,2,2017)).size() == 1);
 		assertTrue(facility.checkAvailability(new Date(1,1,2017), new Date(1,1,2017)).size() == 0);
+		assertTrue(facility.checkAvailability(new Date(2,1,2017), new Date(1,1,2017)).size() == 0);
 	}
 }

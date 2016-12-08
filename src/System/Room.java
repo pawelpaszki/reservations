@@ -1,4 +1,4 @@
-package System;
+package system;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +63,15 @@ public class Room {
 	}
 
 	public boolean isAvailable(Date startDate, Date endDate) {
+//		Date focusDate = startDate;
+//		while(focusDate != null) {
+//			if (reservations.containsKey(focusDate)) {
+//				return false;
+//			}
+//			focusDate = Date.setToNextDate(focusDate, endDate);
+//		}
+//		return true;
+		
 		HashSet<Integer> monthWith31 = new HashSet<>(Arrays.asList(new Integer[] { 1, 3, 5, 7, 8, 10, 12 }));
 		HashSet<Integer> monthWith30 = new HashSet<>(Arrays.asList(new Integer[] { 4, 6, 9, 11 }));
 		int counter = 0;
@@ -82,7 +91,7 @@ public class Room {
 				}
 				counter++;
 				String tempDate = day + "/" + month + "/" + 2017;
-				System.out.println(tempDate);
+				//System.out.println(tempDate);
 				if (reservations.containsKey(tempDate)) {
 					return false;
 				}

@@ -64,65 +64,35 @@ public class Room {
 	}
 
 	public boolean isAvailable(Date startDate, Date endDate) {
-		// Date focusDate = startDate;
-		// while(focusDate != null) {
-		// if (reservations.containsKey(focusDate)) {
-		// return false;
-		// }
-		// focusDate = Date.setToNextDate(focusDate, endDate);
-		// }
-		// return true;
-
-		HashSet<Integer> monthWith31 = new HashSet<>(Arrays.asList(new Integer[] { 1, 3, 5, 7, 8, 10, 12 }));
-		HashSet<Integer> monthWith30 = new HashSet<>(Arrays.asList(new Integer[] { 4, 6, 9, 11 }));
-		int counter = 0;
-		for (int month = startDate.getMonth(); month <= endDate.getMonth();) {
-			for (int day = startDate.getDay();; day++) {
-				if (month >= endDate.getMonth() && day > endDate.getDay() || (month > endDate.getMonth())) {
-					if (counter == 0) {
-						return false;
-					} else {
-						return true;
-					}
-				}
-				if ((monthWith31.contains(Integer.valueOf(month)) && day > 31)
-						|| (monthWith30.contains(Integer.valueOf(month)) && day > 30) || (day > 28 && month == 2)) {
-					month++;
-					day = 1;
-				}
-				counter++;
-				String tempDate = day + "/" + month + "/" + 2017;
-				// System.out.println(tempDate);
-				if (reservations.containsKey(tempDate)) {
-					return false;
-				}
-			}
-		}
-		if (counter == 0) {
+		if (startDate.compareTo(endDate) > 0)
 			return false;
+
+		Date focusDate = startDate;
+		while (focusDate != null) {
+			if (reservations.containsKey(focusDate.getDay() + "/" + focusDate.getMonth() + "/" + focusDate.getYear())) {
+				return false;
+			}
+			focusDate = Date.getNextDate(focusDate, endDate);
 		}
 		return true;
 	}
 
 	public String getReservationsDetails(int bookingID) {
-		Date startDate = new Date(31,12,2017);
-		Date endDate = new Date(31,12,2017);
-		boolean startDateSet = false;
+		Date startDate = new Date(31, 12, 2017);
+		Date endDate = new Date(31, 12, 2017);
 		for (int i = 0; i < reservationList.size(); i++) {
-			
+
 			if (reservationList.get(i).getBookingId() == bookingID) {
-				if (!startDateSet) {
-					startDate = reservationList.get(i).getDate();
-					startDateSet = true;
-				} else {
-					
-					while (++i <reservationList.size() && reservationList.get(i).getBookingId() == bookingID) {
-					}
-					endDate = reservationList.get(--i).getDate();
+				// start of the sublist whose items have the same bookID as the
+				// bookingID argument
+				startDate = reservationList.get(i).getDate();
+				while (++i < reservationList.size() && reservationList.get(i).getBookingId() == bookingID) {
 				}
+				endDate = reservationList.get(--i).getDate();
+				i = reservationList.size() - 1;
 			}
 		}
-		return "Booked from: " + startDate + " to: " + endDate + "(cost per night: " + getCost() + ")"; 
+		return "Booked from: " + startDate + " to: " + endDate + "(cost per night: " + getCost() + ")";
 	}
 
 	/**

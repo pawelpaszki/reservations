@@ -15,6 +15,9 @@ public class Reservation {
 		this.setGuest(guest);
 		this.payment = payment;
 	}
+	public static int nextReservationID(){
+		return ++idCounter;
+	}
 	/**
 	 * @return the date
 	 */
@@ -70,4 +73,7 @@ public class Reservation {
 		Reservation.idCounter = idCounter;
 	}
 	
+	public String toString(){
+		return "bookingID: " + bookingId + ", date: " + date + ", payment: " + payment + ", guest: " + guest;
+	}
 }

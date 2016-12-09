@@ -13,21 +13,22 @@ public class UITest {
 	private Facility facility;
 	private Room room1;
 	private Room room2;
-	private Guest guest;
+	private Guest guest1, guest2;
 	private Payment payment;
-
 	private UI ui;
 
 	@Before
 	public void setUp() throws Exception {
+		Reservation.setIdCounter(0);
+		
 		facility = new Facility();
 		room1 = new Room(2, 1);
 		room2 = new Room(2, 2);
-		facility.addRoom(room1);
-		facility.addRoom(room2);
-		ui = new UI(facility);
-		guest = new Guest("Joe Bloggs", "jbloggs@gmail.com", "051-123456");
+		guest1 = new Guest("Joe Bloggs", "jbloggs@gmail.com", "051-123456");
+		guest2 = new Guest("a","abc@email.com","051-123456");
 		payment = new Payment();
+		
+		//initialize UI and add room to facility in each test case
 	}
 
 	@After
@@ -36,8 +37,12 @@ public class UITest {
 
 	@Test
 	public void testMakeReservation() {
+		facility.addRoom(room1);
+		facility.addRoom(room2);
+		ui = new UI(facility);
+		
 		assertEquals(room1.getReservationList().size(), 0);
-		ui.makeReservation(guest, room1, new Date(1, 1, 2017), new Date(4, 1, 2017), payment);
+		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(4, 1, 2017), payment);
 		assertEquals(room1.getReservationList().size(), 4);
 
 		Date reservedDate1 = room1.getReservationList().get(0).getDate();
@@ -59,18 +64,54 @@ public class UITest {
 		assertEquals(reservedGuest.getName(), "Joe Bloggs");
 		assertEquals(reservedGuest.getEmailAddress(), "jbloggs@gmail.com");
 		assertEquals(reservedGuest.getPhoneNumber(), "051-123456");
-		
+
 		int bookingID = room1.getReservationList().get(0).getBookingId();
 		double roomCost = room1.getCost();
 		payment.setReservationID(bookingID);
 		payment.setAmount(roomCost);
 		payment.setStatus("paid");
 		payment.setMethod("paid by card");
-		
+
 		assertEquals(payment.getAmount(), roomCost, 0.01);
 		assertEquals(payment.getStatus(), "paid");
 		assertEquals(payment.getMethod(), "paid by card");
 		assertEquals(payment.getReservationID(), bookingID);
+	}
+
+	@Test
+	public void testGetReservationDetails1Guest() {
+		facility.addRoom(room1);
+		ui = new UI(facility);
+		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(10, 1, 2017), payment);
+		// Booked from: 1/1/2017 to: 10//2017(cost per night: 50.0)
+		String reservationInfo = ui.getReservationDetails("jbloggs@gmail.com", 1);
+		assertEquals(reservationInfo, "Booked from: 1/1/2017 to: 10/1/2017(cost per night: 50.0)");
+	}
+
+	@Test
+	public void testGetReservationDetails2Guest() {
+		facility.addRoom(room1);
+		facility.addRoom(room2);
+		ui = new UI(facility);		
+		
+		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(2, 1, 2017), payment);
+		ui.makeReservation(guest2, room2, new Date(1, 2, 2017), new Date(2, 2, 2017), payment);
+		
+		String reservationInfo1 = ui.getReservationDetails("jbloggs@gmail.com", 1);
+		String reservationInfo2 = ui.getReservationDetails("abc@email.com", 2);
+		
+		assertEquals(reservationInfo1, "Booked from: 1/1/2017 to: 2/1/2017(cost per night: 50.0)");
+		assertEquals(reservationInfo2, "Booked from: 1/2/2017 to: 2/2/2017(cost per night: 50.0)");
+	}
+
+	@Test
+	public void testGetReservationDetailsNoGuest() {
+		facility.addRoom(room1);
+		facility.addRoom(room2);
+		ui = new UI(facility);	
+		
+		String reservationInfo = ui.getReservationDetails("jbloggs@gmail.com", 1);
+		assertEquals(reservationInfo,"No bookings for: jbloggs@gmail.com");
 	}
 
 }

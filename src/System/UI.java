@@ -75,7 +75,7 @@ public class UI {
 				buildReservationQuery(facility);
 				break;
 			case 3:
-				getReservationDetails(getEMailAddressToCheckReservations());
+				System.out.println(getReservationDetails(getEMailAddressToCheckReservations(),-1));
 				break;
 			case 4:
 				System.out.println("4");
@@ -126,10 +126,14 @@ public class UI {
 		return getValidEmailAddress();
 	}
 
-	public void getReservationDetails(String emailAddress) {
+	public String getReservationDetails(String emailAddress, int bookingID) {
 		ArrayList<Room> rooms = facility.getRooms();
 		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
-		int bookingID = 0;
+		String roomInfo = "No bookings for: " + emailAddress;
+		
+		if(bookingID == 2) {
+			System.out.println();
+		}
 		for (Room room : rooms) {
 			for (Reservation reservation : room.getReservations()) {
 				if (reservation.getGuest().getEmailAddress().equals(emailAddress)) {
@@ -137,28 +141,32 @@ public class UI {
 				}
 			}
 		}
-		if (bookingIDs.size() > 0) {
-			
-			try {
-				do {
-					System.out.println("Please choose from the list of available booking ids: ");
-					Iterator<Entry<Integer, Integer>> it = bookingIDs.entrySet().iterator();
-				    while (it.hasNext()) {
-				        HashMap.Entry pair = it.next();
-				        System.out.println(">" + pair.getKey());
-				        //it.remove(); // avoids a ConcurrentModificationException
-				    }
-					bookingID = input.nextInt();
-				} while (!bookingIDs.containsKey(bookingID));
-				
-			} catch (InputMismatchException e) {
-				System.out.println("Number expected. ");
-			}
-			String roomInfo = facility.getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);
-			System.out.println(roomInfo);
-		} else {
-			System.out.println("No bookings for: " + emailAddress);
+		if (bookingIDs.size() > 0) {			
+			bookingID = bookingID == -1 ? promptForBookingID(bookingIDs) : bookingID;			
+			roomInfo = facility.getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);			
 		}
+		return roomInfo;
+		
+	}
+	
+	public int promptForBookingID(HashMap<Integer, Integer> bookingIDs){
+		int bookingID = 0;
+		try {
+			do {
+				System.out.println("Please choose from the list of available booking ids: ");
+				Iterator<Entry<Integer, Integer>> it = bookingIDs.entrySet().iterator();
+			    while (it.hasNext()) {
+			        HashMap.Entry pair = it.next();
+			        System.out.println(">" + pair.getKey());
+			        //it.remove(); // avoids a ConcurrentModificationException
+			    }
+				bookingID = input.nextInt();
+			} while (!bookingIDs.containsKey(bookingID));
+			
+		} catch (InputMismatchException e) {
+			System.out.println("Number expected. ");
+		}
+		return bookingID;
 	}
 
 	public void buildReservationQuery(Facility facility) {
@@ -175,8 +183,7 @@ public class UI {
 
 	public void makeReservation(Guest guest, Room room, Date startDate, Date endDate, Payment payment) {
 		Date focusDate = Date.clone(startDate);
-		int bookingID = Reservation.getIdCounter();
-		bookingID++;
+		int bookingID = Reservation.nextReservationID();
 		while (focusDate != null) {
 			room.addReservation(new Reservation(Date.clone(focusDate), guest, bookingID, payment));
 			focusDate = Date.getNextDate(focusDate, endDate);

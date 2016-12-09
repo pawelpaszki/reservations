@@ -125,7 +125,7 @@ public class UI {
 	public String removeReservation(String emailAddress, int bookingID ) {
 		HashMap <Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
 		
-		String cancellationInfo = "No bookings for: " + emailAddress;
+		String cancellationInfo = "No reservations for: " + emailAddress;
 		
 		if (ids.size() > 0) {			
 			bookingID = bookingID == -1 ? promptForBookingID(ids) : bookingID;			
@@ -154,7 +154,7 @@ public class UI {
 	public String getReservationDetails(String emailAddress, int bookingID) {
 		ArrayList<Room> rooms = facility.getRooms();
 		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
-		String roomInfo = "No bookings for: " + emailAddress;
+		String roomInfo = "No reservations for: " + emailAddress;
 		
 		for (Room room : rooms) {
 			for (Reservation reservation : room.getReservations()) {

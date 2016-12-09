@@ -111,7 +111,7 @@ public class UITest {
 		ui = new UI(facility);
 
 		String reservationInfo = ui.getReservationDetails("jbloggs@gmail.com", 1);
-		assertEquals(reservationInfo, "No bookings for: jbloggs@gmail.com");
+		assertEquals(reservationInfo, "No reservations for: jbloggs@gmail.com");
 	}
 
 	@Test
@@ -129,6 +129,8 @@ public class UITest {
 		String removeReservation = ui.removeReservation("jbloggs@gmail.com", 1);
 		assertEquals(removeReservation, "Removed reservation booked from: 1/1/2017 to: 2/1/2017(cost per night: 50.0)");
 		String getReservationDetails = ui.getReservationDetails("jbloggs@gmail.com", 1);
-		assertEquals(getReservationDetails, "No bookings for: jbloggs@gmail.com");
+		assertEquals(getReservationDetails, "No reservations for: jbloggs@gmail.com");
+		String removeNonExistentReservation = ui.removeReservation("jbloggs@gmail.com", 1);
+		assertEquals(removeNonExistentReservation, "No reservations for: jbloggs@gmail.com");
 	}
 }

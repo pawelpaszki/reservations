@@ -76,13 +76,16 @@ public class UI {
 				buildReservationQuery(facility);
 				break;
 			case 3:
-				System.out.println(getReservationDetails(getEMailAddressToCheckReservations(), -1));
+				String emailForGetReservation = getValidEmailAddress();
+				System.out.println(getReservationDetails(facility, emailForGetReservation,
+						promptForBookingID(facility, emailForGetReservation)));
 				break;
 			case 4:
 				System.out.println("4");
 				break;
 			case 5:
-				System.out.println(removeReservation(getEMailAddressToCheckReservations(), -1));
+				String emailForRemoveReservation = getValidEmailAddress();
+				System.out.println(facility.removeReservation(emailForRemoveReservation, promptForBookingID(facility, emailForRemoveReservation)));
 				break;
 			case 6:
 				System.out.println("6");
@@ -123,47 +126,19 @@ public class UI {
 		System.exit(0);
 	}
 
-	public String removeReservation(String emailAddress, int bookingID) {
-		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
-
-		String cancellationInfo = "No reservations for: " + emailAddress;
-
-		if (ids.size() > 0) {
-			bookingID = bookingID == -1 ? promptForBookingID(ids) : bookingID;
-			cancellationInfo = facility.getRoom(ids.get(bookingID)).removeReservationDetails(bookingID);
-		}
-		return cancellationInfo;
-	}
-
-	private String getEMailAddressToCheckReservations() {
-		return getValidEmailAddress();
-	}
-
-	public HashMap<Integer, Integer> getBookingIdsForGuest(String emailAddress) {
-		ArrayList<Room> rooms = facility.getRooms();
-		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
-		for (Room room : rooms) {
-			for (Reservation reservation : room.getReservations()) {
-				if (reservation.getGuest().getEmailAddress().equals(emailAddress)) {
-					bookingIDs.put(reservation.getBookingId(), room.getNumber());
-				}
-			}
-		}
-		return bookingIDs;
-	}
-
-	public String getReservationDetails(String emailAddress, int bookingID) {
+	public String getReservationDetails(Facility facility, String emailAddress, int bookingID) {
 		String roomInfo = "No reservations for: " + emailAddress;
-		HashMap<Integer, Integer> bookingIDs = getBookingIdsForGuest(emailAddress);
-		if (bookingIDs.size() > 0) {
-			bookingID = bookingID == -1 ? promptForBookingID(bookingIDs) : bookingID;
+		HashMap<Integer, Integer> bookingIDs = facility.getBookingIdsForGuest(emailAddress);
+		if (bookingIDs.size() > 0 && bookingIDs.containsKey(bookingID)) {
 			roomInfo = facility.getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);
 		}
 		return roomInfo;
 	}
 
-	public int promptForBookingID(HashMap<Integer, Integer> bookingIDs) {
-		int bookingID = 0;
+	public int promptForBookingID(Facility facility, String emailAddress) {
+		int bookingID = -1;
+
+		HashMap<Integer, Integer> bookingIDs = facility.getBookingIdsForGuest(emailAddress);
 		try {
 			do {
 				System.out.println("Please choose from the list of available booking ids: ");
@@ -193,8 +168,9 @@ public class UI {
 					query.getEndDate(), payment, specialRequests);
 		}
 	}
-	
-	public void makeReservation(Guest guest, Room room, Date startDate, Date endDate, Payment payment, HashSet<SpecialRequest> specialRequests) {
+
+	public void makeReservation(Guest guest, Room room, Date startDate, Date endDate, Payment payment,
+			HashSet<SpecialRequest> specialRequests) {
 		Date focusDate = Date.clone(startDate);
 		int bookingID = Reservation.nextReservationID();
 		while (focusDate != null) {

@@ -95,7 +95,7 @@ public class UITest {
 		ui = new UI(facility);
 		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(10, 1, 2017), payment, specialRequests);
 		// Booked from: 1/1/2017 to: 10//2017(cost per night: 50.0)
-		String reservationInfo = ui.getReservationDetails("jbloggs@gmail.com", 1);
+		String reservationInfo = ui.getReservationDetails(facility,"jbloggs@gmail.com", 1);
 		assertEquals(reservationInfo, "Booked from: 1/1/2017 to: 10/1/2017(cost per night: 50.0)");
 	}
 
@@ -108,8 +108,8 @@ public class UITest {
 		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(2, 1, 2017), payment, specialRequests);
 		ui.makeReservation(guest2, room2, new Date(1, 2, 2017), new Date(2, 2, 2017), payment, specialRequests);
 
-		String reservationInfo1 = ui.getReservationDetails("jbloggs@gmail.com", 1);
-		String reservationInfo2 = ui.getReservationDetails("abc@email.com", 2);
+		String reservationInfo1 = ui.getReservationDetails(facility,"jbloggs@gmail.com", 1);
+		String reservationInfo2 = ui.getReservationDetails(facility,"abc@email.com", 2);
 
 		assertEquals(reservationInfo1, "Booked from: 1/1/2017 to: 2/1/2017(cost per night: 50.0)");
 		assertEquals(reservationInfo2, "Booked from: 1/2/2017 to: 2/2/2017(cost per night: 50.0)");
@@ -121,7 +121,7 @@ public class UITest {
 		facility.addRoom(room2);
 		ui = new UI(facility);
 
-		String reservationInfo = ui.getReservationDetails("jbloggs@gmail.com", 1);
+		String reservationInfo = ui.getReservationDetails(facility,"jbloggs@gmail.com", 1);
 		assertEquals(reservationInfo, "No reservations for: jbloggs@gmail.com");
 	}
 
@@ -133,15 +133,15 @@ public class UITest {
 		
 		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(2, 1, 2017), payment, specialRequests);
 		
-		String reservationInfo1 = ui.getReservationDetails("jbloggs@gmail.com", 1);
+		String reservationInfo1 = ui.getReservationDetails(facility,"jbloggs@gmail.com", 1);
 		
 		assertEquals(reservationInfo1, "Booked from: 1/1/2017 to: 2/1/2017(cost per night: 50.0)");
 		
-		String removeReservation = ui.removeReservation("jbloggs@gmail.com", 1);
+		String removeReservation = facility.removeReservation("jbloggs@gmail.com", 1);
 		assertEquals(removeReservation, "Removed reservation booked from: 1/1/2017 to: 2/1/2017(cost per night: 50.0)");
-		String getReservationDetails = ui.getReservationDetails("jbloggs@gmail.com", 1);
+		String getReservationDetails = ui.getReservationDetails(facility,"jbloggs@gmail.com", 1);
 		assertEquals(getReservationDetails, "No reservations for: jbloggs@gmail.com");
-		String removeNonExistentReservation = ui.removeReservation("jbloggs@gmail.com", 1);
+		String removeNonExistentReservation = facility.removeReservation("jbloggs@gmail.com", 1);
 		assertEquals(removeNonExistentReservation, "No reservations for: jbloggs@gmail.com");
 	}
 }

@@ -1,6 +1,7 @@
 package system;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Facility {
 
@@ -41,5 +42,26 @@ public class Facility {
 	 */
 	public void setRooms(ArrayList<Room> rooms) {
 		this.rooms = rooms;
+	}
+	
+	public String removeReservation(String emailAddress, int bookingID) {
+		String cancellationInfo = "No reservations for: " + emailAddress;
+		
+		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
+		if(ids.containsKey(bookingID))
+			cancellationInfo = getRoom(ids.get(bookingID)).removeReservationDetails(bookingID);
+		return cancellationInfo;
+	}
+
+	public HashMap<Integer, Integer> getBookingIdsForGuest(String emailAddress) {
+		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
+		for (Room room : rooms) {
+			for (Reservation reservation : room.getReservations()) {
+				if (reservation.getGuest().getEmailAddress().equals(emailAddress)) {
+					bookingIDs.put(reservation.getBookingId(), room.getNumber());
+				}
+			}
+		}
+		return bookingIDs;
 	}
 }

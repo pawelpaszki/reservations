@@ -85,7 +85,8 @@ public class UI {
 				break;
 			case 5:
 				String emailForRemoveReservation = getValidEmailAddress();
-				System.out.println(facility.removeReservation(emailForRemoveReservation, promptForBookingID(facility, emailForRemoveReservation)));
+				System.out.println(facility.removeReservation(emailForRemoveReservation,
+						promptForBookingID(facility, emailForRemoveReservation)));
 				break;
 			case 6:
 				System.out.println("6");
@@ -126,6 +127,10 @@ public class UI {
 		System.exit(0);
 	}
 
+	public void updateReservation() {
+
+	}
+
 	public int promptForBookingID(Facility facility, String emailAddress) {
 		int bookingID = -1;
 
@@ -155,12 +160,10 @@ public class UI {
 		if (roomNumber != -1) {
 			Payment payment = getPayment(facility.getRoom(roomNumber).getCost());
 			HashSet<SpecialRequest> specialRequests = getSpecialRequests();
-			facility.getRoom(roomNumber).makeReservation(getGuestInformation(), query.getStartDate(),
-					query.getEndDate(), payment, specialRequests);
+			facility.registerReservation(roomNumber, getGuestInformation(), query.getStartDate(), query.getEndDate(),
+					payment, getSpecialRequests());
 		}
 	}
-
-	
 
 	private HashSet<SpecialRequest> getSpecialRequests() {
 		HashSet<SpecialRequest> specialRequests = new HashSet<SpecialRequest>();

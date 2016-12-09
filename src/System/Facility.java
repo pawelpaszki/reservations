@@ -2,6 +2,7 @@ package system;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Facility {
 
@@ -72,5 +73,10 @@ public class Facility {
 			}
 		}
 		return bookingIDs;
+	}
+	
+	public void registerReservation(int roomNumber, Guest guest, Date startDate,
+			Date endDate, Payment payment, HashSet<SpecialRequest> specialRequests){
+		rooms.get(roomNumber).makeReservation(guest, startDate, endDate, payment, specialRequests);
 	}
 }

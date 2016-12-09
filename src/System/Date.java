@@ -103,23 +103,24 @@ public class Date {
 		return false;
 	}
 
-	public static Date setToNextDate(Date currentDate, Date limit) {
+	public static Date getNextDate(Date currentDate, Date limit) {
 		if(currentDate.compareTo(limit) >= 0){ 
 			return null;
 		}
 		int month = currentDate.getMonth();
 		int day = currentDate.getDay();
+		Date nextDate = clone(currentDate);
 		if ((monthWith31.contains(Integer.valueOf(month)) && day == 31)
 				|| (monthWith30.contains(Integer.valueOf(month)) && day == 30) || (day == 28 && month == 2)) {
-			currentDate.setMonth(++month);
-			currentDate.setDay(1);
+			nextDate.setMonth(++month);
+			nextDate.setDay(1);
 		}
 		else {
-			currentDate.setDay(++day);
+			nextDate.setDay(++day);
 		}
-		System.out.println("Set to next day:");
-		System.out.println(currentDate.day + "/" + currentDate.month + "/" + currentDate.year);
-		return currentDate;
+//		System.out.println("Set to next day:");
+//		System.out.println(currentDate.day + "/" + currentDate.month + "/" + currentDate.year);
+		return nextDate;
 	}
 
 	public int compareTo(Date that) {

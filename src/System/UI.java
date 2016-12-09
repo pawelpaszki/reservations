@@ -1,8 +1,9 @@
 package system;
-
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import util.InputValidator;
 
 public class UI {
 
@@ -20,7 +21,7 @@ public class UI {
 			facility.addRoom(new Room(i, 4));
 		}
 	}
-	
+
 	public UI(Facility facility) {
 		this.facility = facility;
 	}
@@ -30,7 +31,7 @@ public class UI {
 		boolean correct = false;
 		do {
 			try {
-				System.out.println("  Medical Council Menu");
+				System.out.println("  Hotel reservation system");
 				System.out.println("  ---------");
 				System.out.println("  1) Check room availability");
 				System.out.println("  2) Make Reservation");
@@ -122,8 +123,8 @@ public class UI {
 		checkAvailability(query);
 		int roomNumber = query.getRoomNumber();
 		if (roomNumber != -1) {
-			makeReservation(getGuestInformation(),
-					facility.getRoom(roomNumber),query.getStartDate(),query.getEndDate());		
+			makeReservation(getGuestInformation(), facility.getRoom(roomNumber), query.getStartDate(),
+					query.getEndDate());
 		}
 
 		/*
@@ -135,83 +136,61 @@ public class UI {
 		 * "Number needed... Please try again"); } } while (!paymentTypePicked);
 		 */
 	}
-	
+
 	public void makeReservation(Guest guest, Room room, Date startDate, Date endDate) {
 		Date focusDate = Date.clone(startDate);
-		while(focusDate != null) {
-			
-			room.addReservation(new Reservation(Date.clone(focusDate),guest));
-			focusDate = Date.setToNextDate(focusDate, endDate);
+		while (focusDate != null) {
+
+			room.addReservation(new Reservation(Date.clone(focusDate), guest));
+			focusDate = Date.getNextDate(focusDate, endDate);
 		}
 	}
 
 	private Guest getGuestInformation() {
-		//TODO validation
 		input.nextLine();
+		
 		System.out.print("Name:");
 		String name = input.nextLine();
-		System.out.print("Email:");
-		String emailAddress = input.nextLine();
-		System.out.print("Phone:");
-		String phoneNumber = input.nextLine();
-		
-		
-		return new Guest(name,emailAddress,phoneNumber);
+		boolean correct = false;
+		String emailAddress;
+		do {
+			System.out.print("Email:");
+			emailAddress = input.nextLine();
+			if (InputValidator.isValidEmailAddress(emailAddress)) {
+				correct = true;
+			} else {
+				System.out.println("Invalid format of email address. Please try again...");
+			}
+		} while (!correct);
+		correct = false;
+		String phoneNumber;
+		do {
+			System.out.print("Please enter phone number (format: 051-123456):");
+			phoneNumber = input.nextLine();
+			if (InputValidator.isValidPhoneNumber(phoneNumber)) {
+				correct = true;
+			} else {
+				System.out.println("Invalid format of phone number. Please try again...");
+			}
+		} while (!correct);
+
+		return new Guest(name, emailAddress, phoneNumber);
 	}
 
 	private void checkAvailability(ReservationQuery query) {
 		ArrayList<Room> currentListOfAvailRooms = new ArrayList<>();
 		Date startDate = null;
 		Date endDate = null;
-
+		
 		System.out.print("Please enter month of startDate: ");
-		int startMonth = 0;
-		boolean correct = false;
-		do {
-			try {
-				startMonth = input.nextInt();
-				correct = true;
-			} catch (InputMismatchException e) {
-				input.nextLine();
-				System.out.println("Number needed... Please try again");
-			}
-		} while (!correct);
+		int startMonth = getNumberInput();
 		System.out.print("Please enter day of startDate: ");
-		int startDay = 0;
-		correct = false;
-		do {
-			try {
-				startDay = input.nextInt();
-				correct = true;
-			} catch (InputMismatchException e) {
-				input.nextLine();
-				System.out.println("Number needed... Please try again");
-			}
-		} while (!correct);
+		int startDay = getNumberInput();
 		System.out.print("Please enter month of endDate: ");
-		int endMonth = 0;
-		correct = false;
-		do {
-			try {
-				endMonth = input.nextInt();
-				correct = true;
-			} catch (InputMismatchException e) {
-				input.nextLine();
-				System.out.println("Number needed... Please try again");
-			}
-		} while (!correct);
+		int endMonth = getNumberInput();
 		System.out.print("Please enter day of endDate: ");
-		int endDay = 0;
-		correct = false;
-		do {
-			try {
-				endDay = input.nextInt();
-				correct = true;
-			} catch (InputMismatchException e) {
-				input.nextLine();
-				System.out.println("Number needed... Please try again");
-			}
-		} while (!correct);
+		int endDay = getNumberInput();
+		
 		if ((endDay >= startDay && endMonth == startMonth) || endMonth > startMonth) {
 			try {
 				startDate = new Date(startDay, startMonth, 2017);
@@ -231,6 +210,17 @@ public class UI {
 		} else {
 			System.out.println("Incorrect dates were provided");
 		}
+	}
+
+	private int getNumberInput() {
+		do {
+			try {
+				return input.nextInt();
+			} catch (InputMismatchException e) {
+				input.nextLine();
+				System.out.println("Number needed... Please try again");
+			}
+		} while (true);
 	}
 
 	/**

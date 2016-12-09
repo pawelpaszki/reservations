@@ -18,6 +18,7 @@ public class FacilityTest {
 	private Reservation reservation3;
 	private Reservation reservation4;
 	private Guest guest;
+	private Payment payment;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -27,10 +28,13 @@ public class FacilityTest {
 		facility.addRoom(room1);
 		facility.addRoom(room2);
 		guest = new Guest("Joe Bloggs", "jbloggs@gmail.com", "051-123456");
-		reservation1 = new Reservation(new Date (1,1,2017), guest);
-		reservation2 = new Reservation(new Date (2,2,2017), guest);
-		reservation3 = new Reservation(new Date (3,3,2017), guest);
-		reservation4 = new Reservation(new Date (4,4,2017), guest);
+		payment = new Payment();
+		int bookingID = Reservation.getIdCounter();
+		bookingID++;
+		reservation1 = new Reservation(new Date (1,1,2017), guest, bookingID, payment);
+		reservation2 = new Reservation(new Date (2,2,2017), guest, bookingID, payment);
+		reservation3 = new Reservation(new Date (3,3,2017), guest, bookingID, payment);
+		reservation4 = new Reservation(new Date (4,4,2017), guest, bookingID, payment);
 		room1.addReservation(reservation1);
 		room1.addReservation(reservation2);
 		room2.addReservation(reservation3);

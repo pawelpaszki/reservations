@@ -9,10 +9,11 @@ public class Reservation {
 	private Payment payment;
 	private Guest guest;
 	
-	public Reservation (Date date, Guest guest) {
-		this.bookingId = idCounter++;
+	public Reservation (Date date, Guest guest, int bookingID, Payment payment) {
+		this.bookingId = bookingID;
 		this.date = date;
 		this.setGuest(guest);
+		this.payment = payment;
 	}
 	/**
 	 * @return the date
@@ -55,5 +56,17 @@ public class Reservation {
 	 */
 	public int getBookingId() {
 		return bookingId;
+	}
+	/**
+	 * @return the idCounter
+	 */
+	public static int getIdCounter() {
+		return idCounter;
+	}
+	/**
+	 * @param idCounter the idCounter to set
+	 */
+	public static void setIdCounter(int idCounter) {
+		Reservation.idCounter = idCounter;
 	}
 }

@@ -11,6 +11,7 @@ public class Room {
 	private int number;
 	private HashMap<String, Reservation> reservations = new HashMap<String, Reservation>();
 	private ArrayList<Reservation> reservationList = new ArrayList<Reservation>();
+	private double cost = 50.0;
 
 	public Room(int capacity, int number) {
 		this.capacity = capacity;
@@ -123,5 +124,19 @@ public class Room {
 		Date date = reservation.getDate();
 		String stringDate = date.getDay() + "/" + date.getMonth() + "/" + date.getYear();
 		reservations.put(stringDate, reservation);
+	}
+
+	/**
+	 * @return the cost
+	 */
+	public double getCost() {
+		return cost;
+	}
+
+	/**
+	 * @param cost the cost to set
+	 */
+	public void setCost(double cost) {
+		this.cost = cost;
 	}
 }

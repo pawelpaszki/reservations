@@ -1,4 +1,5 @@
 package system;
+
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -123,32 +124,26 @@ public class UI {
 		checkAvailability(query);
 		int roomNumber = query.getRoomNumber();
 		if (roomNumber != -1) {
+			Payment payment = getPayment(facility.getRoom(roomNumber).getCost());
 			makeReservation(getGuestInformation(), facility.getRoom(roomNumber), query.getStartDate(),
-					query.getEndDate());
+					query.getEndDate(), payment);
 		}
 
-		/*
-		 * boolean paymentTypePicked = false; do { System.out.println(
-		 * "  Please choose payment type"); System.out.println(
-		 * "  1) Pay by card"); System.out.println("  2) Pay at hotel"); try {
-		 * startMonth = input.nextInt(); correct = true; } catch
-		 * (InputMismatchException e) { input.nextLine(); System.out.println(
-		 * "Number needed... Please try again"); } } while (!paymentTypePicked);
-		 */
 	}
 
-	public void makeReservation(Guest guest, Room room, Date startDate, Date endDate) {
+	public void makeReservation(Guest guest, Room room, Date startDate, Date endDate, Payment payment) {
 		Date focusDate = Date.clone(startDate);
+		int bookingID = Reservation.getIdCounter();
+		bookingID++;
 		while (focusDate != null) {
-
-			room.addReservation(new Reservation(Date.clone(focusDate), guest));
+			room.addReservation(new Reservation(Date.clone(focusDate), guest, bookingID, payment));
 			focusDate = Date.getNextDate(focusDate, endDate);
 		}
 	}
 
 	private Guest getGuestInformation() {
 		input.nextLine();
-		
+
 		System.out.print("Name:");
 		String name = input.nextLine();
 		boolean correct = false;
@@ -181,7 +176,7 @@ public class UI {
 		ArrayList<Room> currentListOfAvailRooms = new ArrayList<>();
 		Date startDate = null;
 		Date endDate = null;
-		
+
 		System.out.print("Please enter month of startDate: ");
 		int startMonth = getNumberInput();
 		System.out.print("Please enter day of startDate: ");
@@ -190,7 +185,7 @@ public class UI {
 		int endMonth = getNumberInput();
 		System.out.print("Please enter day of endDate: ");
 		int endDay = getNumberInput();
-		
+
 		if ((endDay >= startDay && endMonth == startMonth) || endMonth > startMonth) {
 			try {
 				startDate = new Date(startDay, startMonth, 2017);
@@ -210,6 +205,81 @@ public class UI {
 		} else {
 			System.out.println("Incorrect dates were provided");
 		}
+
+	}
+
+	private Payment getPayment(double amount) {
+		Payment payment = new Payment();
+
+		int paymentType;
+		do {
+			try {
+				System.out.println("Please select type of payment: ");
+				System.out.println("  1) Card payment");
+				System.out.println("  2) Payment at arrival");
+				paymentType = input.nextInt();
+				if (paymentType == 2) {
+					payment.setMethod("pay at arrival");
+					payment.setStatus("not paid");
+					payment.setAmount(amount);
+					return payment;
+				} else if (paymentType == 1) {
+					boolean correct = false;
+					long cardNumber = 0l;
+					do {
+						try {
+							System.out.println("Please enter card number: ");
+							cardNumber = input.nextLong();
+							if ((long) Math.pow(10, 15) <= cardNumber && (long) Math.pow(10, 16) > cardNumber) {
+								correct = true;
+							} else {
+								System.out.println("Invalid number. Please try again...");
+							}
+						} catch (InputMismatchException e) {
+							System.out.println("Incorrect value: ");
+						}
+					} while (!correct);
+					correct = false;
+					int expiryMonth = 0;
+					do {
+						try {
+							System.out.println("Please enter expiry month: ");
+							expiryMonth = input.nextInt();
+							if (expiryMonth > 0 && expiryMonth < 13) {
+								correct = true;
+							} else {
+								System.out.println("Please enter valid month. ");
+							}
+						} catch (InputMismatchException e) {
+							System.out.println("Incorrect value: ");
+						}
+					} while (!correct);
+					correct = false;
+					int expiryYear = 0;
+					do {
+						try {
+							System.out.println("Please enter expiry year: ");
+							expiryYear = input.nextInt();
+							if (expiryYear > 2016 && expiryYear < 2026) {
+								correct = true;
+							} else {
+								System.out.println("Please enter valid year. ");
+							}
+						} catch (InputMismatchException e) {
+							System.out.println("Incorrect value: ");
+						}
+					} while (!correct);
+					payment.setMethod("pay by card");
+					payment.setStatus("paid");
+					payment.setAmount(amount);
+					return payment;
+				} else {
+					System.out.println("Incorrect type of payment. Please try again...");
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Incorrect value");
+			}
+		} while (true);
 	}
 
 	private int getNumberInput() {

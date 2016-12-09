@@ -5,11 +5,18 @@ public class Payment {
 	private String method;
 	private double amount;
 	private String status;
+	private int reservationID;
 	
-	public Payment(String method, double amount, String status) {
+	public Payment() {
 		
 	}
 	
+	public Payment (String method, double amount, String status, int reservationID) {
+		this.method = method;
+		this.amount = amount;
+		this.status = status;
+		this.reservationID = reservationID;
+	}
 	/**
 	 * @return the method
 	 */
@@ -45,6 +52,18 @@ public class Payment {
 	 */
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	/**
+	 * @return the reservationID
+	 */
+	public int getReservationID() {
+		return reservationID;
+	}
+	/**
+	 * @param reservationID the reservationID to set
+	 */
+	public void setReservationID(int reservationID) {
+		this.reservationID = reservationID;
 	}
 	
 	

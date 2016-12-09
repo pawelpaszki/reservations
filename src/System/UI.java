@@ -1,7 +1,10 @@
 package system;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import util.InputValidator;
@@ -36,14 +39,14 @@ public class UI {
 				System.out.println("  ---------");
 				System.out.println("  1) Check room availability");
 				System.out.println("  2) Make Reservation");
-				System.out.println("  3) Add an Intern");
-				System.out.println("  4) Delete a Doctor");
-				System.out.println("  5) Edit Doctor's Details");
-				System.out.println("  6) Display Total Amount of Registration Owed To The Council");
-				System.out.println("  7) Display Total Amount of Registration Owed By Interns");
-				System.out.println("  8) Display Total Amount of Registration Owed By General Doctors");
-				System.out.println("  9) Display Total Amount of Registration Owed By Specialists");
-				System.out.println("  10) Display Average Amount of Registration Owed To The Council");
+				System.out.println("  3) Get Reservation Details");
+				System.out.println("  4) Update Reservation");
+				System.out.println("  5) Remove reservation");
+				System.out.println("  6) ");
+				System.out.println("  7) ");
+				System.out.println("  8) ");
+				System.out.println("  9) ");
+				System.out.println("  10) ");
 				System.out.println("  0) Exit");
 				System.out.print("==>> ");
 				option = input.nextInt();
@@ -72,7 +75,7 @@ public class UI {
 				buildReservationQuery(facility);
 				break;
 			case 3:
-				System.out.println("3");
+				getReservationDetails(getEMailAddressToCheckReservations());
 				break;
 			case 4:
 				System.out.println("4");
@@ -119,6 +122,45 @@ public class UI {
 		System.exit(0);
 	}
 
+	private String getEMailAddressToCheckReservations() {
+		return getValidEmailAddress();
+	}
+
+	public void getReservationDetails(String emailAddress) {
+		ArrayList<Room> rooms = facility.getRooms();
+		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
+		int bookingID = 0;
+		for (Room room : rooms) {
+			for (Reservation reservation : room.getReservations()) {
+				if (reservation.getGuest().getEmailAddress().equals(emailAddress)) {
+					bookingIDs.put(reservation.getBookingId(), room.getNumber()); // booking id, room number
+				}
+			}
+		}
+		if (bookingIDs.size() > 0) {
+			
+			try {
+				do {
+					System.out.println("Please choose from the list of available booking ids: ");
+					Iterator<Entry<Integer, Integer>> it = bookingIDs.entrySet().iterator();
+				    while (it.hasNext()) {
+				        HashMap.Entry pair = it.next();
+				        System.out.println(">" + pair.getKey());
+				        //it.remove(); // avoids a ConcurrentModificationException
+				    }
+					bookingID = input.nextInt();
+				} while (!bookingIDs.containsKey(bookingID));
+				
+			} catch (InputMismatchException e) {
+				System.out.println("Number expected. ");
+			}
+			String roomInfo = facility.getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);
+			System.out.println(roomInfo);
+		} else {
+			System.out.println("No bookings for: " + emailAddress);
+		}
+	}
+
 	public void buildReservationQuery(Facility facility) {
 		ReservationQuery query = new ReservationQuery();
 		checkAvailability(query);
@@ -141,13 +183,10 @@ public class UI {
 		}
 	}
 
-	private Guest getGuestInformation() {
+	private String getValidEmailAddress() {
 		input.nextLine();
-
-		System.out.print("Name:");
-		String name = input.nextLine();
+		String emailAddress = "";
 		boolean correct = false;
-		String emailAddress;
 		do {
 			System.out.print("Email:");
 			emailAddress = input.nextLine();
@@ -157,7 +196,16 @@ public class UI {
 				System.out.println("Invalid format of email address. Please try again...");
 			}
 		} while (!correct);
-		correct = false;
+		return emailAddress;
+	}
+
+	private Guest getGuestInformation() {
+		input.nextLine();
+
+		System.out.print("Name:");
+		String name = input.nextLine();
+		String emailAddress = getValidEmailAddress();
+		boolean correct = false;
 		String phoneNumber;
 		do {
 			System.out.print("Please enter phone number (format: 051-123456):");

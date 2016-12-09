@@ -69,4 +69,5 @@ public class Reservation {
 	public static void setIdCounter(int idCounter) {
 		Reservation.idCounter = idCounter;
 	}
+	
 }

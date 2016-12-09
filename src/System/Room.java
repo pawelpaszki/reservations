@@ -64,15 +64,15 @@ public class Room {
 	}
 
 	public boolean isAvailable(Date startDate, Date endDate) {
-//		Date focusDate = startDate;
-//		while(focusDate != null) {
-//			if (reservations.containsKey(focusDate)) {
-//				return false;
-//			}
-//			focusDate = Date.setToNextDate(focusDate, endDate);
-//		}
-//		return true;
-		
+		// Date focusDate = startDate;
+		// while(focusDate != null) {
+		// if (reservations.containsKey(focusDate)) {
+		// return false;
+		// }
+		// focusDate = Date.setToNextDate(focusDate, endDate);
+		// }
+		// return true;
+
 		HashSet<Integer> monthWith31 = new HashSet<>(Arrays.asList(new Integer[] { 1, 3, 5, 7, 8, 10, 12 }));
 		HashSet<Integer> monthWith30 = new HashSet<>(Arrays.asList(new Integer[] { 4, 6, 9, 11 }));
 		int counter = 0;
@@ -92,7 +92,7 @@ public class Room {
 				}
 				counter++;
 				String tempDate = day + "/" + month + "/" + 2017;
-				//System.out.println(tempDate);
+				// System.out.println(tempDate);
 				if (reservations.containsKey(tempDate)) {
 					return false;
 				}
@@ -102,6 +102,27 @@ public class Room {
 			return false;
 		}
 		return true;
+	}
+
+	public String getReservationsDetails(int bookingID) {
+		Date startDate = new Date(31,12,2017);
+		Date endDate = new Date(31,12,2017);
+		boolean startDateSet = false;
+		for (int i = 0; i < reservationList.size(); i++) {
+			
+			if (reservationList.get(i).getBookingId() == bookingID) {
+				if (!startDateSet) {
+					startDate = reservationList.get(i).getDate();
+					startDateSet = true;
+				} else {
+					
+					while (++i <reservationList.size() && reservationList.get(i).getBookingId() == bookingID) {
+					}
+					endDate = reservationList.get(--i).getDate();
+				}
+			}
+		}
+		return "Booked from: " + startDate + " to: " + endDate + "(cost per night: " + getCost() + ")"; 
 	}
 
 	/**
@@ -134,7 +155,8 @@ public class Room {
 	}
 
 	/**
-	 * @param cost the cost to set
+	 * @param cost
+	 *            the cost to set
 	 */
 	public void setCost(double cost) {
 		this.cost = cost;

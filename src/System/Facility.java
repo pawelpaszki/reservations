@@ -28,4 +28,18 @@ public class Facility {
 		}
 		return null;
 	}
+
+	/**
+	 * @return the rooms
+	 */
+	public ArrayList<Room> getRooms() {
+		return rooms;
+	}
+
+	/**
+	 * @param rooms the rooms to set
+	 */
+	public void setRooms(ArrayList<Room> rooms) {
+		this.rooms = rooms;
+	}
 }

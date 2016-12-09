@@ -77,7 +77,7 @@ public class UI {
 				break;
 			case 3:
 				String emailForGetReservation = getValidEmailAddress();
-				System.out.println(getReservationDetails(facility, emailForGetReservation,
+				System.out.println(facility.getReservationDetails(emailForGetReservation,
 						promptForBookingID(facility, emailForGetReservation)));
 				break;
 			case 4:
@@ -124,15 +124,6 @@ public class UI {
 		// the user chose option 0, so exit the program
 		System.out.println("Exiting... bye");
 		System.exit(0);
-	}
-
-	public String getReservationDetails(Facility facility, String emailAddress, int bookingID) {
-		String roomInfo = "No reservations for: " + emailAddress;
-		HashMap<Integer, Integer> bookingIDs = facility.getBookingIdsForGuest(emailAddress);
-		if (bookingIDs.size() > 0 && bookingIDs.containsKey(bookingID)) {
-			roomInfo = facility.getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);
-		}
-		return roomInfo;
 	}
 
 	public int promptForBookingID(Facility facility, String emailAddress) {
@@ -356,20 +347,5 @@ public class UI {
 				System.out.println("Number needed... Please try again");
 			}
 		} while (true);
-	}
-
-	/**
-	 * @return the availabilityChecked
-	 */
-	public boolean isAvailabilityChecked() {
-		return availabilityChecked;
-	}
-
-	/**
-	 * @param availabilityChecked
-	 *            the availabilityChecked to set
-	 */
-	public void setAvailabilityChecked(boolean availabilityChecked) {
-		this.availabilityChecked = availabilityChecked;
 	}
 }

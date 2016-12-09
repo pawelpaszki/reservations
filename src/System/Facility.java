@@ -44,6 +44,15 @@ public class Facility {
 		this.rooms = rooms;
 	}
 	
+	public String getReservationDetails(String emailAddress, int bookingID) {
+		String roomInfo = "No reservations for: " + emailAddress;
+		HashMap<Integer, Integer> bookingIDs = getBookingIdsForGuest(emailAddress);
+		if (bookingIDs.size() > 0 && bookingIDs.containsKey(bookingID)) {
+			roomInfo = getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);
+		}
+		return roomInfo;
+	}
+	
 	public String removeReservation(String emailAddress, int bookingID) {
 		String cancellationInfo = "No reservations for: " + emailAddress;
 		

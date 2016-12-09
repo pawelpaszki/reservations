@@ -3,6 +3,7 @@ package system;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Room {
 
@@ -17,6 +18,14 @@ public class Room {
 		this.number = number;
 	}
 
+	public void makeReservation(Guest guest, Date startDate, Date endDate, Payment payment, HashSet<SpecialRequest> specialRequests) {
+		Date focusDate = Date.clone(startDate);
+		int bookingID = Reservation.nextReservationID();
+		while (focusDate != null) {
+			addReservation(new Reservation(Date.clone(focusDate), guest, bookingID, payment, specialRequests));
+			focusDate = Date.getNextDate(focusDate, endDate);
+		}
+	}
 	/**
 	 * @return the capacity
 	 */

@@ -2,6 +2,7 @@ package system;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -75,7 +76,7 @@ public class UI {
 				buildReservationQuery(facility);
 				break;
 			case 3:
-				System.out.println(getReservationDetails(getEMailAddressToCheckReservations(),-1));
+				System.out.println(getReservationDetails(getEMailAddressToCheckReservations(), -1));
 				break;
 			case 4:
 				System.out.println("4");
@@ -122,59 +123,59 @@ public class UI {
 		System.exit(0);
 	}
 
-	public String removeReservation(String emailAddress, int bookingID ) {
-		HashMap <Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
-		
+	public String removeReservation(String emailAddress, int bookingID) {
+		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
+
 		String cancellationInfo = "No reservations for: " + emailAddress;
-		
-		if (ids.size() > 0) {			
-			bookingID = bookingID == -1 ? promptForBookingID(ids) : bookingID;			
+
+		if (ids.size() > 0) {
+			bookingID = bookingID == -1 ? promptForBookingID(ids) : bookingID;
 			cancellationInfo = facility.getRoom(ids.get(bookingID)).removeReservationDetails(bookingID);
-		}		
+		}
 		return cancellationInfo;
 	}
-	
+
 	private String getEMailAddressToCheckReservations() {
 		return getValidEmailAddress();
 	}
-	
+
 	public HashMap<Integer, Integer> getBookingIdsForGuest(String emailAddress) {
 		ArrayList<Room> rooms = facility.getRooms();
 		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
 		for (Room room : rooms) {
 			for (Reservation reservation : room.getReservations()) {
 				if (reservation.getGuest().getEmailAddress().equals(emailAddress)) {
-					bookingIDs.put(reservation.getBookingId(), room.getNumber()); // booking id, room number
+					bookingIDs.put(reservation.getBookingId(), room.getNumber());
 				}
 			}
 		}
 		return bookingIDs;
 	}
-	
+
 	public String getReservationDetails(String emailAddress, int bookingID) {
 		String roomInfo = "No reservations for: " + emailAddress;
 		HashMap<Integer, Integer> bookingIDs = getBookingIdsForGuest(emailAddress);
-		if (bookingIDs.size() > 0) {			
-			bookingID = bookingID == -1 ? promptForBookingID(bookingIDs) : bookingID;			
-			roomInfo = facility.getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);			
+		if (bookingIDs.size() > 0) {
+			bookingID = bookingID == -1 ? promptForBookingID(bookingIDs) : bookingID;
+			roomInfo = facility.getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);
 		}
 		return roomInfo;
 	}
-	
-	public int promptForBookingID(HashMap<Integer, Integer> bookingIDs){
+
+	public int promptForBookingID(HashMap<Integer, Integer> bookingIDs) {
 		int bookingID = 0;
 		try {
 			do {
 				System.out.println("Please choose from the list of available booking ids: ");
 				Iterator<Entry<Integer, Integer>> it = bookingIDs.entrySet().iterator();
-			    while (it.hasNext()) {
-			        HashMap.Entry pair = it.next();
-			        System.out.println(">" + pair.getKey());
-			        //it.remove(); // avoids a ConcurrentModificationException
-			    }
+				while (it.hasNext()) {
+					Entry<Integer, Integer> pair = it.next();
+					System.out.println(">" + pair.getKey());
+					// it.remove(); // avoids a ConcurrentModificationException
+				}
 				bookingID = input.nextInt();
 			} while (!bookingIDs.containsKey(bookingID));
-			
+
 		} catch (InputMismatchException e) {
 			System.out.println("Number expected. ");
 		}
@@ -187,19 +188,48 @@ public class UI {
 		int roomNumber = query.getRoomNumber();
 		if (roomNumber != -1) {
 			Payment payment = getPayment(facility.getRoom(roomNumber).getCost());
-			makeReservation(getGuestInformation(), facility.getRoom(roomNumber), query.getStartDate(),
-					query.getEndDate(), payment);
+			HashSet<SpecialRequest> specialRequests = getSpecialRequests();
+			facility.getRoom(roomNumber).makeReservation(getGuestInformation(), query.getStartDate(),
+					query.getEndDate(), payment, specialRequests);
 		}
-
 	}
-
-	public void makeReservation(Guest guest, Room room, Date startDate, Date endDate, Payment payment) {
+	
+	public void makeReservation(Guest guest, Room room, Date startDate, Date endDate, Payment payment, HashSet<SpecialRequest> specialRequests) {
 		Date focusDate = Date.clone(startDate);
 		int bookingID = Reservation.nextReservationID();
 		while (focusDate != null) {
-			room.addReservation(new Reservation(Date.clone(focusDate), guest, bookingID, payment));
+			room.addReservation(new Reservation(Date.clone(focusDate), guest, bookingID, payment, specialRequests));
 			focusDate = Date.getNextDate(focusDate, endDate);
 		}
+	}
+
+	private HashSet<SpecialRequest> getSpecialRequests() {
+		HashSet<SpecialRequest> specialRequests = new HashSet<SpecialRequest>();
+		System.out.println("Do you require any special requests? Type yes to continue");
+		String response = input.nextLine();
+		if (response.equalsIgnoreCase("yes")) {
+			boolean finished = false;
+			do {
+				System.out.println("Type the special request, which is displayed below or type end to exit");
+				for (SpecialRequest sr : SpecialRequest.values()) {
+					if (!specialRequests.contains(sr)) {
+						System.out.println(sr.name());
+					}
+				}
+				if (response.equalsIgnoreCase("end")) {
+					finished = true;
+				} else {
+					if (response.equalsIgnoreCase("COT")) {
+						specialRequests.add(SpecialRequest.COT);
+					} else if (response.equalsIgnoreCase("BALKONY")) {
+						specialRequests.add(SpecialRequest.BALKONY);
+					} else if (response.equalsIgnoreCase("NONSMOKING")) {
+						specialRequests.add(SpecialRequest.NONSMOKING);
+					}
+				}
+			} while (!finished);
+		}
+		return specialRequests;
 	}
 
 	private String getValidEmailAddress() {

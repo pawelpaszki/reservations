@@ -3,6 +3,8 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import java.util.HashSet;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +21,7 @@ public class FacilityTest {
 	private Reservation reservation4;
 	private Guest guest;
 	private Payment payment;
+	private HashSet<SpecialRequest> specialRequests;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -31,10 +34,12 @@ public class FacilityTest {
 		payment = new Payment();
 		int bookingID = Reservation.getIdCounter();
 		bookingID++;
-		reservation1 = new Reservation(new Date (1,1,2017), guest, bookingID, payment);
-		reservation2 = new Reservation(new Date (2,2,2017), guest, bookingID, payment);
-		reservation3 = new Reservation(new Date (3,3,2017), guest, bookingID, payment);
-		reservation4 = new Reservation(new Date (4,4,2017), guest, bookingID, payment);
+		specialRequests = new HashSet<SpecialRequest>();
+		specialRequests.add(SpecialRequest.COT);
+		reservation1 = new Reservation(new Date (1,1,2017), guest, bookingID, payment, specialRequests);
+		reservation2 = new Reservation(new Date (2,2,2017), guest, bookingID, payment, specialRequests);
+		reservation3 = new Reservation(new Date (3,3,2017), guest, bookingID, payment, specialRequests);
+		reservation4 = new Reservation(new Date (4,4,2017), guest, bookingID, payment, specialRequests);
 		room1.addReservation(reservation1);
 		room1.addReservation(reservation2);
 		room2.addReservation(reservation3);

@@ -1,12 +1,21 @@
 package tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashSet;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import system.*;
+import system.Date;
+import system.Facility;
+import system.Guest;
+import system.Payment;
+import system.Reservation;
+import system.Room;
+import system.SpecialRequest;
+import system.UI;
 
 public class UITest {
 
@@ -16,6 +25,7 @@ public class UITest {
 	private Guest guest1, guest2;
 	private Payment payment;
 	private UI ui;
+	private HashSet<SpecialRequest> specialRequests;
 
 	@Before
 	public void setUp() throws Exception {
@@ -27,6 +37,8 @@ public class UITest {
 		guest1 = new Guest("Joe Bloggs", "jbloggs@gmail.com", "051-123456");
 		guest2 = new Guest("a", "abc@email.com", "051-123456");
 		payment = new Payment();
+		specialRequests = new HashSet<SpecialRequest>();
+		specialRequests.add(SpecialRequest.COT);
 
 		// initialize UI and add room to facility in each test case
 	}
@@ -40,9 +52,8 @@ public class UITest {
 		facility.addRoom(room1);
 		facility.addRoom(room2);
 		ui = new UI(facility);
-
 		assertEquals(room1.getReservationList().size(), 0);
-		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(4, 1, 2017), payment);
+		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(4, 1, 2017), payment, specialRequests);
 		assertEquals(room1.getReservationList().size(), 4);
 
 		Date reservedDate1 = room1.getReservationList().get(0).getDate();
@@ -82,7 +93,7 @@ public class UITest {
 	public void testGetReservationDetails1Guest() {
 		facility.addRoom(room1);
 		ui = new UI(facility);
-		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(10, 1, 2017), payment);
+		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(10, 1, 2017), payment, specialRequests);
 		// Booked from: 1/1/2017 to: 10//2017(cost per night: 50.0)
 		String reservationInfo = ui.getReservationDetails("jbloggs@gmail.com", 1);
 		assertEquals(reservationInfo, "Booked from: 1/1/2017 to: 10/1/2017(cost per night: 50.0)");
@@ -94,8 +105,8 @@ public class UITest {
 		facility.addRoom(room2);
 		ui = new UI(facility);
 
-		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(2, 1, 2017), payment);
-		ui.makeReservation(guest2, room2, new Date(1, 2, 2017), new Date(2, 2, 2017), payment);
+		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(2, 1, 2017), payment, specialRequests);
+		ui.makeReservation(guest2, room2, new Date(1, 2, 2017), new Date(2, 2, 2017), payment, specialRequests);
 
 		String reservationInfo1 = ui.getReservationDetails("jbloggs@gmail.com", 1);
 		String reservationInfo2 = ui.getReservationDetails("abc@email.com", 2);
@@ -120,7 +131,7 @@ public class UITest {
 		facility.addRoom(room2);
 		ui = new UI(facility);		
 		
-		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(2, 1, 2017), payment);
+		ui.makeReservation(guest1, room1, new Date(1, 1, 2017), new Date(2, 1, 2017), payment, specialRequests);
 		
 		String reservationInfo1 = ui.getReservationDetails("jbloggs@gmail.com", 1);
 		

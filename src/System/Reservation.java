@@ -1,5 +1,7 @@
 package system;
 
+import java.util.HashSet;
+
 public class Reservation {
 
 	private static int idCounter = 0;
@@ -8,12 +10,14 @@ public class Reservation {
 	private Date date;
 	private Payment payment;
 	private Guest guest;
+	private HashSet<SpecialRequest> specialRequests;
 	
-	public Reservation (Date date, Guest guest, int bookingID, Payment payment) {
+	public Reservation (Date date, Guest guest, int bookingID, Payment payment, HashSet<SpecialRequest> specialRequests) {
 		this.bookingId = bookingID;
 		this.date = date;
 		this.setGuest(guest);
 		this.payment = payment;
+		this.specialRequests = specialRequests;
 	}
 	public static int nextReservationID(){
 		return ++idCounter;
@@ -75,5 +79,17 @@ public class Reservation {
 	
 	public String toString(){
 		return "bookingID: " + bookingId + ", date: " + date + ", payment: " + payment + ", guest: " + guest;
+	}
+	/**
+	 * @return the specialRequests
+	 */
+	public HashSet<SpecialRequest> getSpecialRequests() {
+		return specialRequests;
+	}
+	/**
+	 * @param specialRequests the specialRequests to set
+	 */
+	public void setSpecialRequests(HashSet<SpecialRequest> specialRequests) {
+		this.specialRequests = specialRequests;
 	}
 }

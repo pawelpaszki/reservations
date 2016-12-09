@@ -137,7 +137,7 @@ public class UI {
 	private String getEMailAddressToCheckReservations() {
 		return getValidEmailAddress();
 	}
-
+	
 	public HashMap<Integer, Integer> getBookingIdsForGuest(String emailAddress) {
 		ArrayList<Room> rooms = facility.getRooms();
 		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
@@ -152,17 +152,8 @@ public class UI {
 	}
 	
 	public String getReservationDetails(String emailAddress, int bookingID) {
-		ArrayList<Room> rooms = facility.getRooms();
-		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
 		String roomInfo = "No reservations for: " + emailAddress;
-		
-		for (Room room : rooms) {
-			for (Reservation reservation : room.getReservations()) {
-				if (reservation.getGuest().getEmailAddress().equals(emailAddress)) {
-					bookingIDs.put(reservation.getBookingId(), room.getNumber()); // booking id, room number
-				}
-			}
-		}
+		HashMap<Integer, Integer> bookingIDs = getBookingIdsForGuest(emailAddress);
 		if (bookingIDs.size() > 0) {			
 			bookingID = bookingID == -1 ? promptForBookingID(bookingIDs) : bookingID;			
 			roomInfo = facility.getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);			

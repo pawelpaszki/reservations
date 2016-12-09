@@ -169,15 +169,7 @@ public class UI {
 		}
 	}
 
-	public void makeReservation(Guest guest, Room room, Date startDate, Date endDate, Payment payment,
-			HashSet<SpecialRequest> specialRequests) {
-		Date focusDate = Date.clone(startDate);
-		int bookingID = Reservation.nextReservationID();
-		while (focusDate != null) {
-			room.addReservation(new Reservation(Date.clone(focusDate), guest, bookingID, payment, specialRequests));
-			focusDate = Date.getNextDate(focusDate, endDate);
-		}
-	}
+	
 
 	private HashSet<SpecialRequest> getSpecialRequests() {
 		HashSet<SpecialRequest> specialRequests = new HashSet<SpecialRequest>();

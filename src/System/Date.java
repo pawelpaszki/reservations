@@ -117,9 +117,9 @@ public class Date {
 		} else {
 			nextDate.setDay(++day);
 		}
-		// System.out.println("Set to next day:");
-		// System.out.println(currentDate.day + "/" + currentDate.month + "/" +
-		// currentDate.year);
+//		 System.out.println("Set to next day:");
+//		 System.out.println(currentDate.day + "/" + currentDate.month + "/" +
+//		 currentDate.year);
 		return nextDate;
 	}
 

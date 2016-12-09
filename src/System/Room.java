@@ -17,15 +17,7 @@ public class Room {
 		this.capacity = capacity;
 		this.number = number;
 	}
-
-	public void makeReservation(Guest guest, Date startDate, Date endDate, Payment payment, HashSet<SpecialRequest> specialRequests) {
-		Date focusDate = Date.clone(startDate);
-		int bookingID = Reservation.nextReservationID();
-		while (focusDate != null) {
-			addReservation(new Reservation(Date.clone(focusDate), guest, bookingID, payment, specialRequests));
-			focusDate = Date.getNextDate(focusDate, endDate);
-		}
-	}
+	
 	/**
 	 * @return the capacity
 	 */
@@ -84,6 +76,17 @@ public class Room {
 		}
 		return true;
 	}
+	
+	public void makeReservation(Guest guest, Date startDate, Date endDate, Payment payment, HashSet<SpecialRequest> specialRequests) {
+		Date focusDate = Date.clone(startDate);
+		int bookingID = Reservation.nextReservationID();
+		while (focusDate != null) {
+			Reservation reservation = new Reservation(Date.clone(focusDate),guest, bookingID, payment, specialRequests);
+			reservationList.add(reservation);
+			reservations.put(focusDate.getDay() + "/" + focusDate.getMonth() + "/" + focusDate.getYear(), reservation);
+			focusDate = Date.getNextDate(focusDate, endDate);
+		}
+	}
 
 	public String getReservationsDetails(int bookingID) {
 		Date startDate = new Date(31, 12, 2017);
@@ -126,13 +129,6 @@ public class Room {
 	 */
 	public void setReservationList(ArrayList<Reservation> reservationList) {
 		this.reservationList = reservationList;
-	}
-
-	public void addReservation(Reservation reservation) {
-		reservationList.add(reservation);
-		Date date = reservation.getDate();
-		String stringDate = date.getDay() + "/" + date.getMonth() + "/" + date.getYear();
-		reservations.put(stringDate, reservation);
 	}
 
 	/**

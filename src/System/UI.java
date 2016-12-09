@@ -81,7 +81,7 @@ public class UI {
 				System.out.println("4");
 				break;
 			case 5:
-				System.out.println("5");
+				System.out.println(removeReservation(getEMailAddressToCheckReservations(), -1));
 				break;
 			case 6:
 				System.out.println("6");
@@ -122,18 +122,40 @@ public class UI {
 		System.exit(0);
 	}
 
+	public String removeReservation(String emailAddress, int bookingID ) {
+		HashMap <Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
+		
+		String cancellationInfo = "No bookings for: " + emailAddress;
+		
+		if (ids.size() > 0) {			
+			bookingID = bookingID == -1 ? promptForBookingID(ids) : bookingID;			
+			cancellationInfo = facility.getRoom(ids.get(bookingID)).removeReservationDetails(bookingID);
+		}		
+		return cancellationInfo;
+	}
+	
 	private String getEMailAddressToCheckReservations() {
 		return getValidEmailAddress();
 	}
 
+	public HashMap<Integer, Integer> getBookingIdsForGuest(String emailAddress) {
+		ArrayList<Room> rooms = facility.getRooms();
+		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
+		for (Room room : rooms) {
+			for (Reservation reservation : room.getReservations()) {
+				if (reservation.getGuest().getEmailAddress().equals(emailAddress)) {
+					bookingIDs.put(reservation.getBookingId(), room.getNumber()); // booking id, room number
+				}
+			}
+		}
+		return bookingIDs;
+	}
+	
 	public String getReservationDetails(String emailAddress, int bookingID) {
 		ArrayList<Room> rooms = facility.getRooms();
 		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
 		String roomInfo = "No bookings for: " + emailAddress;
 		
-		if(bookingID == 2) {
-			System.out.println();
-		}
 		for (Room room : rooms) {
 			for (Reservation reservation : room.getReservations()) {
 				if (reservation.getGuest().getEmailAddress().equals(emailAddress)) {
@@ -146,7 +168,6 @@ public class UI {
 			roomInfo = facility.getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);			
 		}
 		return roomInfo;
-		
 	}
 	
 	public int promptForBookingID(HashMap<Integer, Integer> bookingIDs){
@@ -195,7 +216,7 @@ public class UI {
 		String emailAddress = "";
 		boolean correct = false;
 		do {
-			System.out.print("Email:");
+			System.out.print("Please enter your email address:");
 			emailAddress = input.nextLine();
 			if (InputValidator.isValidEmailAddress(emailAddress)) {
 				correct = true;
@@ -209,7 +230,7 @@ public class UI {
 	private Guest getGuestInformation() {
 		input.nextLine();
 
-		System.out.print("Name:");
+		System.out.print("Please enter your name:");
 		String name = input.nextLine();
 		String emailAddress = getValidEmailAddress();
 		boolean correct = false;

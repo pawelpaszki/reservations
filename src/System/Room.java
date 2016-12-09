@@ -1,9 +1,8 @@
 package system;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class Room {
 
@@ -81,7 +80,6 @@ public class Room {
 		Date startDate = new Date(31, 12, 2017);
 		Date endDate = new Date(31, 12, 2017);
 		for (int i = 0; i < reservationList.size(); i++) {
-
 			if (reservationList.get(i).getBookingId() == bookingID) {
 				// start of the sublist whose items have the same bookID as the
 				// bookingID argument
@@ -95,6 +93,17 @@ public class Room {
 		return "Booked from: " + startDate + " to: " + endDate + "(cost per night: " + getCost() + ")";
 	}
 
+	public String removeReservationDetails(int bookingID) {
+		String returnString = getReservationsDetails(bookingID).replaceAll("\\bBooked\\b", "Removed reservation booked");
+		for (int i = 0; i < reservationList.size(); i++) {
+			if (reservationList.get(i).getBookingId() == bookingID) {
+				reservations.remove(reservationList.get(i).getDate());
+				reservationList.set(i, null);
+			}
+		}
+		reservationList.removeAll(Collections.singleton(null));
+		return returnString;
+	}
 	/**
 	 * @return the reservationList
 	 */

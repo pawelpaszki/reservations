@@ -1,10 +1,10 @@
 package system;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
@@ -22,7 +22,7 @@ public class UI {
 
 	public UI() {
 		for (int i = 1; i < 6; i++) {
-			facility.addRoom(new Room(i, 4));
+			facility.addRoom(new Room(4, i));
 		}
 	}
 
@@ -40,13 +40,9 @@ public class UI {
 				System.out.println("  1) Check room availability");
 				System.out.println("  2) Make Reservation");
 				System.out.println("  3) Get Reservation Details");
-				System.out.println("  4) Update Reservation");
-				System.out.println("  5) Remove reservation");
-				System.out.println("  6) ");
-				System.out.println("  7) ");
-				System.out.println("  8) ");
-				System.out.println("  9) ");
-				System.out.println("  10) ");
+				System.out.println("  4) Update Personal Details for Reservation");
+				System.out.println("  5) Update Special Requests for Reservation");
+				System.out.println("  6) Remove reservation");
 				System.out.println("  0) Exit");
 				System.out.print("==>> ");
 				option = input.nextInt();
@@ -75,34 +71,28 @@ public class UI {
 				buildReservationQuery(facility);
 				break;
 			case 3:
-				String emailForGetReservation = getValidEmailAddress();
-				System.out.println(facility.getReservationDetails(emailForGetReservation,
-						promptForBookingID(facility, emailForGetReservation)));
+				String emailAddress = getValidEmailAddress();
+				System.out.println(facility.getReservationDetails(emailAddress,
+						promptForBookingID(facility, emailAddress)));
 				break;
 			case 4:
-				System.out.println("4");
+				String emailForGuestToUpdate = getValidEmailAddress();
+				int reservationToUpdate = promptForBookingID(facility, emailForGuestToUpdate);
+				if (reservationToUpdate == -1) {
+					System.out.println("No bookings to update");
+				} else {
+					Guest updatedGuest = getGuestInformation();
+					facility.updateGuest(emailForGuestToUpdate, reservationToUpdate, updatedGuest);
+				}
 				break;
 			case 5:
+
+				break;
+			case 6:
 				String emailForRemoveReservation = getValidEmailAddress();
 				System.out.println(facility.removeReservation(emailForRemoveReservation,
 						promptForBookingID(facility, emailForRemoveReservation)));
 				break;
-			case 6:
-				System.out.println("6");
-				break;
-			case 7:
-				System.out.println("7");
-				break;
-			case 8:
-				System.out.println("8");
-				break;
-			case 9:
-				System.out.println("9");
-				break;
-			case 10:
-				System.out.println("10");
-				break;
-
 			default:
 				System.out.println("Invalid option entered: " + option);
 				break;
@@ -126,14 +116,18 @@ public class UI {
 		System.exit(0);
 	}
 
-	public void updateReservation() {
-
+	public int getReservationsToUpdate(LinkedHashMap<Integer, Integer> getBookingIdsForGuest) {
+		System.out.println();
+		return 0;
 	}
 
 	public int promptForBookingID(Facility facility, String emailAddress) {
 		int bookingID = -1;
 
-		HashMap<Integer, Integer> bookingIDs = facility.getBookingIdsForGuest(emailAddress);
+		LinkedHashMap<Integer, Integer> bookingIDs = facility.getBookingIdsForGuest(emailAddress);
+		if (bookingIDs.isEmpty()) {
+			return -1;
+		}
 		try {
 			do {
 				System.out.println("Please choose from the list of available booking ids: ");
@@ -141,7 +135,6 @@ public class UI {
 				while (it.hasNext()) {
 					Entry<Integer, Integer> pair = it.next();
 					System.out.println(">" + pair.getKey());
-					// it.remove(); // avoids a ConcurrentModificationException
 				}
 				bookingID = input.nextInt();
 			} while (!bookingIDs.containsKey(bookingID));
@@ -193,7 +186,6 @@ public class UI {
 	}
 
 	private String getValidEmailAddress() {
-		input.nextLine();
 		String emailAddress = "";
 		boolean correct = false;
 		do {

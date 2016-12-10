@@ -3,6 +3,7 @@ package system;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 
 public class Facility {
 
@@ -21,9 +22,9 @@ public class Facility {
 	public void addRoom(Room room) {
 		rooms.add(room);
 	}
-	
+
 	public Room getRoom(int roomNumber) {
-		for(Room room: rooms){
+		for (Room room : rooms) {
 			if (room.getNumber() == roomNumber) {
 				return room;
 			}
@@ -39,34 +40,39 @@ public class Facility {
 	}
 
 	/**
-	 * @param rooms the rooms to set
+	 * @param rooms
+	 *            the rooms to set
 	 */
 	public void setRooms(ArrayList<Room> rooms) {
 		this.rooms = rooms;
 	}
-	
+
 	public String getReservationDetails(String emailAddress, int bookingID) {
 		String roomInfo = "No reservations for: " + emailAddress;
-		HashMap<Integer, Integer> bookingIDs = getBookingIdsForGuest(emailAddress);
-		if (bookingIDs.size() > 0 && bookingIDs.containsKey(bookingID)) {
-			roomInfo = getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);
+		if (bookingID != -1) {
+			LinkedHashMap<Integer, Integer> bookingIDs = getBookingIdsForGuest(emailAddress);
+			
+			if (bookingIDs.size() > 0 && bookingIDs.containsKey(bookingID)) {
+				roomInfo = getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);
+			}
 		}
 		return roomInfo;
 	}
-	
+
 	public String removeReservation(String emailAddress, int bookingID) {
 		String cancellationInfo = "No reservations for: " + emailAddress;
-		
-		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
-		if(ids.containsKey(bookingID))
-			cancellationInfo = getRoom(ids.get(bookingID)).removeReservationDetails(bookingID);
+		if (bookingID != -1) {
+			HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
+			if (ids.containsKey(bookingID))
+				cancellationInfo = getRoom(ids.get(bookingID)).removeReservationDetails(bookingID);
+		}
 		return cancellationInfo;
 	}
 
-	public HashMap<Integer, Integer> getBookingIdsForGuest(String emailAddress) {
-		HashMap<Integer, Integer> bookingIDs = new HashMap<Integer, Integer>();
+	public LinkedHashMap<Integer, Integer> getBookingIdsForGuest(String emailAddress) {
+		LinkedHashMap<Integer, Integer> bookingIDs = new LinkedHashMap<Integer, Integer>();
 		for (Room room : rooms) {
-			for (Reservation reservation : room.getReservations()) {
+			for (Reservation reservation : room.getReservationList()) {
 				if (reservation.getGuest().getEmailAddress().equals(emailAddress)) {
 					bookingIDs.put(reservation.getBookingId(), room.getNumber());
 				}
@@ -74,9 +80,15 @@ public class Facility {
 		}
 		return bookingIDs;
 	}
-	
-	public void registerReservation(int roomNumber, Guest guest, Date startDate,
-			Date endDate, Payment payment, HashSet<SpecialRequest> specialRequests){
+
+	public void registerReservation(int roomNumber, Guest guest, Date startDate, Date endDate, Payment payment,
+			HashSet<SpecialRequest> specialRequests) {
 		rooms.get(roomNumber).makeReservation(guest, startDate, endDate, payment, specialRequests);
+	}
+
+	public void updateGuest(String emailAddress, int bookingID, Guest updatedGuest) {
+		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
+		if (ids.containsKey(bookingID))
+			getRoom(ids.get(bookingID)).updateGuest(bookingID, updatedGuest);
 	}
 }

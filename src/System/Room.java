@@ -93,10 +93,12 @@ public class Room {
 		Date endDate = new Date(31, 12, 2017);
 		for (int i = 0; i < reservationList.size(); i++) {
 			if (reservationList.get(i).getBookingId() == bookingID) {
+				System.out.println(reservationList.get(i).getDate());
 				// start of the sublist whose items have the same bookID as the
 				// bookingID argument
 				startDate = reservationList.get(i).getDate();
 				while (++i < reservationList.size() && reservationList.get(i).getBookingId() == bookingID) {
+					System.out.println(reservationList.get(i).getDate());
 				}
 				endDate = reservationList.get(--i).getDate();
 				i = reservationList.size() - 1;
@@ -116,6 +118,17 @@ public class Room {
 		reservationList.removeAll(Collections.singleton(null));
 		return returnString;
 	}
+	
+	public void updateGuest(int bookingID, Guest guest) {
+		for (Reservation reservation: reservationList) {
+			if (reservation.getBookingId() == bookingID) {
+				System.out.println("true");
+				reservation.setGuest(guest);
+				System.out.println();
+			}
+		}
+	}
+	
 	/**
 	 * @return the reservationList
 	 */

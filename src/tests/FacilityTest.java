@@ -1,6 +1,8 @@
 package tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -214,4 +216,32 @@ public class FacilityTest {
 		String reservationInfo = facility.getReservationDetails("jbloggs@gmail.com", 1);
 		assertEquals(reservationInfo, "No reservations for: jbloggs@gmail.com");
 	}
+	
+	@Test
+	public void testUpdateGuestForReservation() {
+		Room room1 = new Room(2,1);
+		facility.addRoom(room1);
+		room1.makeReservation(defaultGuest, new Date(1, 1, 2017), new Date(4, 1, 2017), defaultPayment,
+				defaultSpecialRequests);
+		Guest reservedGuest = room1.getReservationList().get(0).getGuest();
+		assertEquals(reservedGuest.getName(), "Joe Bloggs");
+		assertEquals(reservedGuest.getEmailAddress(), "jbloggs@gmail.com");
+		assertEquals(reservedGuest.getPhoneNumber(), "051-123456");
+		
+		Guest updatedGuest = new Guest("James Bloggs", "jb@gmail.com", "051-654321");
+		facility.updateGuest(reservedGuest.getEmailAddress(), 1, updatedGuest);
+		reservedGuest = room1.getReservationList().get(0).getGuest();
+		assertNotEquals(reservedGuest.getName(), "Joe Bloggs");
+		assertNotEquals(reservedGuest.getEmailAddress(), "jbloggs@gmail.com");
+		assertNotEquals(reservedGuest.getPhoneNumber(), "051-123456");
+		
+		assertEquals(reservedGuest.getName(), updatedGuest.getName());
+		assertEquals(reservedGuest.getEmailAddress(), updatedGuest.getEmailAddress());
+		assertEquals(reservedGuest.getPhoneNumber(), updatedGuest.getPhoneNumber());
+		
+	}
+	
+	
+	
+	
 }

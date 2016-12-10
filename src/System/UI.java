@@ -41,7 +41,7 @@ public class UI {
 				System.out.println("  2) Make Reservation");
 				System.out.println("  3) Get Reservation Details");
 				System.out.println("  4) Update Personal Details for Reservation");
-				System.out.println("  5) Update Special Requests for Reservation");
+				System.out.println("  5) Add Special Requests for Reservation");
 				System.out.println("  6) Remove reservation");
 				System.out.println("  0) Exit");
 				System.out.print("==>> ");
@@ -92,7 +92,8 @@ public class UI {
 					System.out.println("No bookings to update");
 				} else {
 					int roomNumber = facility.getBookingIdsForGuest(emailaddressToUpdateRequests).get(reservationToUpdate);
-					HashSet<SpecialRequest> specialRequests = facility.getRoom(roomNumber).getSpecialRequests(reservationToUpdate);
+					HashSet<SpecialRequest> specialRequests = getSpecialRequests(facility.getRoom(roomNumber).getSpecialRequests(reservationToUpdate));
+					
 					facility.updateSpecialRequests(emailaddressToUpdateRequests, reservationToUpdate, specialRequests);
 				}
 				break;
@@ -172,7 +173,7 @@ public class UI {
 			System.out.println("Do you require any special requests? Type yes to continue");
 		}
 		String response = input.nextLine();
-		if (response.equalsIgnoreCase("yes")) {
+		if (response.equalsIgnoreCase("yes") || requests != null) {
 			boolean finished = false;
 			do {
 				System.out.println("Type the special request, which is displayed below or type end to exit");

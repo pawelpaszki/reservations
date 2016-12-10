@@ -110,8 +110,8 @@ public class UI {
 				if (reservationToUpdate == -1) {
 					System.out.println("No bookings to update");
 				} else {
-					int roomNumber = facility.getBookingIdsForGuest(emailaddressToUpdateRequests).get(reservationToUpdate);
-					HashSet<SpecialRequest> specialRequests = getSpecialRequests(facility.getRoom(roomNumber).getSpecialRequests(reservationToUpdate));
+					Room room = facility.getBookingIdsForGuest(emailaddressToUpdateRequests).get(reservationToUpdate);
+					HashSet<SpecialRequest> specialRequests = getSpecialRequests(room.getSpecialRequests(reservationToUpdate));
 					
 					facility.updateSpecialRequests(emailaddressToUpdateRequests, reservationToUpdate, specialRequests);
 				}
@@ -148,16 +148,16 @@ public class UI {
 	public int promptForBookingID(Facility facility, String emailAddress) {
 		int bookingID = -1;
 
-		LinkedHashMap<Integer, Integer> bookingIDs = facility.getBookingIdsForGuest(emailAddress);
+		LinkedHashMap<Integer, Room> bookingIDs = facility.getBookingIdsForGuest(emailAddress);
 		if (bookingIDs.isEmpty()) {
 			return -1;
 		}
 		try {
 			do {
 				System.out.println("Please choose from the list of available booking ids: ");
-				Iterator<Entry<Integer, Integer>> it = bookingIDs.entrySet().iterator();
+				Iterator<Entry<Integer, Room>> it = bookingIDs.entrySet().iterator();
 				while (it.hasNext()) {
-					Entry<Integer, Integer> pair = it.next();
+					Entry<Integer, Room> pair = it.next();
 					System.out.println(">" + pair.getKey());
 				}
 				bookingID = input.nextInt();

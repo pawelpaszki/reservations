@@ -117,9 +117,9 @@ public class Facility {
 	public String getReservationDetails(String emailAddress, int bookingID) {
 		String roomInfo = "No reservations for: " + emailAddress;
 		if (bookingID != -1) {
-			LinkedHashMap<Integer, Integer> bookingIDs = getBookingIdsForGuest(emailAddress);
+			LinkedHashMap<Integer, Room> bookingIDs = getBookingIdsForGuest(emailAddress);
 			if (bookingIDs.size() > 0 && bookingIDs.containsKey(bookingID)) {
-				roomInfo = getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);
+				roomInfo = getRoom(bookingID).getReservationsDetails(bookingID);
 			}
 		}
 		return roomInfo;
@@ -134,9 +134,9 @@ public class Facility {
 	public String removeReservation(String emailAddress, int bookingID) {
 		String cancellationInfo = "No reservations for: " + emailAddress;
 		if (bookingID != -1) {
-			HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
+			HashMap<Integer, Room> ids = getBookingIdsForGuest(emailAddress);
 			if (ids.containsKey(bookingID))
-				cancellationInfo = getRoom(ids.get(bookingID)).removeReservationDetails(bookingID);
+				cancellationInfo = getRoom(bookingID).removeReservationDetails(bookingID);
 		}
 		return cancellationInfo;
 	}
@@ -146,12 +146,12 @@ public class Facility {
 	 * @param emailAddress - Guest's email
 	 * @return Map of booking numbers and corresponding Room numbers
 	 */
-	public LinkedHashMap<Integer, Integer> getBookingIdsForGuest(String emailAddress) {
-		LinkedHashMap<Integer, Integer> bookingIDs = new LinkedHashMap<Integer, Integer>();
+	public LinkedHashMap<Integer, Room> getBookingIdsForGuest(String emailAddress) {
+		LinkedHashMap<Integer, Room> bookingIDs = new LinkedHashMap<Integer, Room>();
 		for (Room room : rooms) {
 			for (Reservation reservation : room.getReservationList()) {
 				if (reservation.getGuest().getEmailAddress().equals(emailAddress)) {
-					bookingIDs.put(reservation.getBookingId(), room.getNumber());
+					bookingIDs.put(reservation.getBookingId(), room);
 				}
 			}
 		}
@@ -179,9 +179,9 @@ public class Facility {
 	 * @param updatedGuest
 	 */
 	public void updateGuest(String emailAddress, int bookingID, Guest updatedGuest) {
-		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
+		HashMap<Integer, Room> ids = getBookingIdsForGuest(emailAddress);
 		if (ids.containsKey(bookingID)) {
-			getRoom(ids.get(bookingID)).updateGuest(bookingID, updatedGuest);
+			getRoom(bookingID).updateGuest(bookingID, updatedGuest);
 		}
 	}
 	
@@ -192,9 +192,9 @@ public class Facility {
 	 * @param specialRequests
 	 */
 	public void updateSpecialRequests(String emailAddress, int bookingID, HashSet<SpecialRequest> specialRequests) {
-		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
+		HashMap<Integer, Room> ids = getBookingIdsForGuest(emailAddress);
 		if (ids.containsKey(bookingID)) {
-			getRoom(ids.get(bookingID)).updateSpecialRequests(bookingID, specialRequests);
+			getRoom(bookingID).updateSpecialRequests(bookingID, specialRequests);
 		}
 	}
 }

@@ -14,7 +14,6 @@ public class UI {
 
 	private Scanner input = new Scanner(System.in);
 	private Facility facility = new Facility();
-	private boolean availabilityChecked = false;
 
 	public static void main(String[] args) {
 		UI ui = new UI();
@@ -159,7 +158,6 @@ public class UI {
 		int roomNumber = query.getRoomNumber();
 		if (roomNumber != -1) {
 			Payment payment = getPayment(facility.getRoom(roomNumber).getCost());
-			HashSet<SpecialRequest> specialRequests = getSpecialRequests();
 			facility.registerReservation(roomNumber, getGuestInformation(), query.getStartDate(), query.getEndDate(),
 					payment, getSpecialRequests());
 		}

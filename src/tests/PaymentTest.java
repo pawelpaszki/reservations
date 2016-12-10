@@ -12,8 +12,20 @@ import system.Payment;
 import system.Room;
 import system.SpecialRequest;
 
+/**
+ * 
+ * @author Thai Kha Le, Pawel Paszki
+ * @version 10/12/2016
+ * 
+ * This test class tests all functions from Payment class
+ */
+
 public class PaymentTest {
 
+	/**
+	 * Payment is test by setting its fields with certain values and checking
+	 * if these values are as expected
+	 */
 	@Test
 	public void testSetupPayment() {
 		Guest defaultGuest = new Guest("Joe Bloggs", "jbloggs@gmail.com", "051-123456");

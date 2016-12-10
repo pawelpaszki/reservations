@@ -6,10 +6,27 @@ import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.LinkedHashMap;
 
+/**
+ * 
+ * @author Thai Kha Le, Pawel Paszki
+ * @version 10/12/2016
+ * 
+ * This is a class, which looks after dealing with Rooms:
+ * - reserving Room
+ * - cancelling reservation for a Room
+ * - viewing or updating reservation for a Room
+ */
+
 public class Facility {
 
 	private ArrayList<Room> rooms = new ArrayList<Room>();
 
+	/**
+	 * 
+	 * @param startDate - start date of availability period
+	 * @param endDate - end date of availability period
+	 * @return list of available rooms (may be empty)
+	 */
 	public ArrayList<Room> checkAvailability(Date startDate, Date endDate) {
 		ArrayList<Room> availableRooms = new ArrayList<Room>();
 		for (int i = 0; i < rooms.size(); i++) {
@@ -20,10 +37,19 @@ public class Facility {
 		return availableRooms;
 	}
 
+	/**
+	 * This method adds room to Facility
+	 * @param room - room to be added
+	 */
 	public void addRoom(Room room) {
 		rooms.add(room);
 	}
 
+	/**
+	 * 
+	 * @param roomNumber - number of room
+	 * @return Room with specified number
+	 */
 	public Room getRoom(int roomNumber) {
 		for (Room room : rooms) {
 			if (room.getNumber() == roomNumber) {
@@ -34,7 +60,7 @@ public class Facility {
 	}
 
 	/**
-	 * @return the rooms
+	 * @return all rooms
 	 */
 	public ArrayList<Room> getRooms() {
 		return rooms;
@@ -48,6 +74,14 @@ public class Facility {
 		this.rooms = rooms;
 	}
 	
+	/**
+	 * This method constructs reservation query for the reservation
+	 * @param query - constructed reservation query
+	 * @param startMonth - start month of the stay
+	 * @param startDay - start day of the stay
+	 * @param endMonth - end month of the stay
+	 * @param endDay - end month of the stay
+	 */
 	public void checkAvailability(ReservationQuery query, int startMonth, int startDay, int endMonth, int endDay) {
 		ArrayList<Room> currentListOfAvailRooms = new ArrayList<>();
 		Date startDate = null;
@@ -73,6 +107,13 @@ public class Facility {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param emailAddress - email of the Guest
+	 * @param bookingID - booking number for the reservations 
+	 * @return details for the reservation or info that there are no reservations 
+	 * for given email address
+	 */
 	public String getReservationDetails(String emailAddress, int bookingID) {
 		String roomInfo = "No reservations for: " + emailAddress;
 		if (bookingID != -1) {
@@ -84,6 +125,12 @@ public class Facility {
 		return roomInfo;
 	}
 
+	/**
+	 * 
+	 * @param emailAddress - Guest's email
+	 * @param bookingID - booking number for the reservations
+	 * @return information about removed reservation
+	 */
 	public String removeReservation(String emailAddress, int bookingID) {
 		String cancellationInfo = "No reservations for: " + emailAddress;
 		if (bookingID != -1) {
@@ -94,6 +141,11 @@ public class Facility {
 		return cancellationInfo;
 	}
 
+	/**
+	 * 
+	 * @param emailAddress - Guest's email
+	 * @return Map of booking numbers and corresponding Room numbers
+	 */
 	public LinkedHashMap<Integer, Integer> getBookingIdsForGuest(String emailAddress) {
 		LinkedHashMap<Integer, Integer> bookingIDs = new LinkedHashMap<Integer, Integer>();
 		for (Room room : rooms) {
@@ -106,11 +158,26 @@ public class Facility {
 		return bookingIDs;
 	}
 
+	/**
+	 * This method makes reservation with the following parameters:
+	 * @param roomNumber - number of the room
+	 * @param guest
+	 * @param startDate of the stay
+	 * @param endDate of the stay
+	 * @param payment details
+	 * @param specialRequests list (may be empty)
+	 */
 	public void registerReservation(int roomNumber, Guest guest, Date startDate, Date endDate, Payment payment,
 			HashSet<SpecialRequest> specialRequests) {
 		getRoom(roomNumber).makeReservation(guest, startDate, endDate, payment, specialRequests);
 	}
 
+	/**
+	 * This method updates details of user with the specified email address and bookingID
+	 * @param emailAddress
+	 * @param bookingID
+	 * @param updatedGuest
+	 */
 	public void updateGuest(String emailAddress, int bookingID, Guest updatedGuest) {
 		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
 		if (ids.containsKey(bookingID)) {
@@ -118,6 +185,12 @@ public class Facility {
 		}
 	}
 	
+	/**
+	 * This method updates special requests for reservation for user with the specified email address and bookingID
+	 * @param emailAddress
+	 * @param bookingID
+	 * @param specialRequests
+	 */
 	public void updateSpecialRequests(String emailAddress, int bookingID, HashSet<SpecialRequest> specialRequests) {
 		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
 		if (ids.containsKey(bookingID)) {

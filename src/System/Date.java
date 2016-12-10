@@ -4,6 +4,15 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 
+/**
+ * 
+ * @author Thai Kha Le, Pawel Paszki
+ * @version 10/12/2016
+ * 
+ * This is a custom Date class with validations working for year 2017 only
+ */
+
+
 public class Date {
 
 	private static final HashSet<Integer> monthWith31 = new HashSet<>(
@@ -14,6 +23,12 @@ public class Date {
 	private int month;
 	private int year;
 
+	/**
+	 *  Constructor for the Date objects with three following parameters:
+	 * @param day 
+	 * @param month
+	 * @param year
+	 */
 	public Date(int day, int month, int year) {
 
 		if (year == 2017 && month >= 1 && month <= 12 && day > 0 && day <= 31 && isValid(year, month, day)) {
@@ -21,7 +36,6 @@ public class Date {
 			this.month = month;
 			this.year = year;
 		} else {
-			//System.out.println("***");
 			System.out.println(day + "/" + month + "/" + year);
 			throw new InputMismatchException("incorrect data");
 		}
@@ -72,6 +86,15 @@ public class Date {
 		this.day = day;
 	}
 
+	/**
+	 * This method validates day, month and year arguments as the components
+	 * for Date object - validation for leap years is not complete, but sufficient
+	 * for this project's needs
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @return
+	 */
 	private boolean isValid(int year, int month, int day) {
 		switch (month) {
 		case 1:
@@ -103,6 +126,12 @@ public class Date {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param currentDate - reference point for next date
+	 * @param limit - last date in sequence
+	 * @return next Date in sequence
+	 */
 	public static Date getNextDate(Date currentDate, Date limit) {
 		if (currentDate.compareTo(limit) >= 0) {
 			return null;
@@ -117,12 +146,14 @@ public class Date {
 		} else {
 			nextDate.setDay(++day);
 		}
-//		 System.out.println("Set to next day:");
-//		 System.out.println(currentDate.day + "/" + currentDate.month + "/" +
-//		 currentDate.year);
 		return nextDate;
 	}
 
+	/**
+	 * 
+	 * @param that
+	 * @return comparison result of "this" Date and Date passed as a parameter
+	 */
 	public int compareTo(Date that) {
 		if (month < that.month) {
 			return -1;
@@ -136,10 +167,18 @@ public class Date {
 		return 0;
 	}
 
+	/**
+	 * 
+	 * @param d - Date to clone
+	 * @return cloned Date
+	 */
 	public static Date clone(Date d) {
 		return new Date(d.day, d.month, d.year);
 	}
 
+	/**
+	 * String representation of Date instance
+	 */
 	public String toString() {
 		return day + "/" + month + "/" + year;
 	}

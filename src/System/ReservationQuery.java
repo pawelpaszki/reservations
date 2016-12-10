@@ -1,5 +1,13 @@
 package system;
 
+/**
+ * 
+ * @author Thai Kha Le, Pawel Paszki
+ * @version 10/12/2016
+ * 
+ * This is a class representing Reservation Query
+ */
+
 public class ReservationQuery {
 	private int roomNumber = -1; //means none
 	private Date startDate,endDate;

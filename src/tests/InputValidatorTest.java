@@ -7,6 +7,14 @@ import org.junit.Test;
 
 import util.InputValidator;
 
+/**
+ * 
+ * @author Thai Kha Le, Pawel Paszki
+ * @version 10/12/2016
+ * 
+ * This test class tests all functions from InputValidator class
+ */
+
 public class InputValidatorTest {
 	
 	private String validEmailAddress;
@@ -30,6 +38,9 @@ public class InputValidatorTest {
 		invalidPhoneNumber3 = "051-12-3456";
 	}
 
+	/**
+	 * one valid email address and three invalid ones are passed to check if validation works
+	 */
 	@Test
 	public void testEmailValidation() {
 		assertEquals(InputValidator.isValidEmailAddress(validEmailAddress), true);
@@ -38,6 +49,10 @@ public class InputValidatorTest {
 		assertEquals(InputValidator.isValidEmailAddress(invalidEmailAddress3), false);
 	}
 	
+	/**
+	 * one valid phone number and three invalid ones are passed to check if validation works
+	 * valid phone number can only have one hyphen and between 8-10 digits
+	 */
 	@Test
 	public void testPhoneNumberValidation() {
 		assertEquals(InputValidator.isValidPhoneNumber(validPhoneNumber), true);

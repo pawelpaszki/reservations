@@ -2,6 +2,14 @@ package system;
 
 import java.util.HashSet;
 
+/**
+ * 
+ * @author Thai Kha Le, Pawel Paszki
+ * @version 10/12/2016
+ * 
+ * This is a class representing Payment for Reservations
+ */
+
 public class Reservation {
 
 	private static int idCounter = 0;
@@ -12,6 +20,14 @@ public class Reservation {
 	private Guest guest;
 	private HashSet<SpecialRequest> specialRequests;
 	
+	/**
+	 * Constructor for Reservation instances
+	 * @param date
+	 * @param guest
+	 * @param bookingID
+	 * @param payment
+	 * @param specialRequests
+	 */
 	public Reservation (Date date, Guest guest, int bookingID, Payment payment, HashSet<SpecialRequest> specialRequests) {
 		this.bookingId = bookingID;
 		this.date = date;
@@ -19,6 +35,11 @@ public class Reservation {
 		this.payment = payment;
 		this.specialRequests = specialRequests;
 	}
+	
+	/**
+	 * 
+	 * @return ID, which is unique for each booking (not necessarily unique for each Reservation)
+	 */
 	public static int nextReservationID(){
 		return ++idCounter;
 	}
@@ -76,7 +97,9 @@ public class Reservation {
 	public static void setIdCounter(int idCounter) {
 		Reservation.idCounter = idCounter;
 	}
-	
+	/**
+	 * String representation of Reservation
+	 */
 	public String toString(){
 		return "bookingID: " + bookingId + ", date: " + date + ", payment: " + payment + ", guest: " + guest;
 	}

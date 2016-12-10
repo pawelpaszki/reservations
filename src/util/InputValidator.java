@@ -1,5 +1,13 @@
 package util;
 
+/**
+ * 
+ * @author Thai Kha Le, Pawel Paszki
+ * @version 10/12/2016
+ * 
+ * This is a util class validating email addresses and phone numbers
+ */
+
 public class InputValidator {
 
 	/**

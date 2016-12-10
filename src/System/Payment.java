@@ -1,5 +1,12 @@
 package system;
 
+/**
+ * 
+ * @author Thai Kha Le, Pawel Paszki
+ * @version 10/12/2016
+ * 
+ * This is a class representing Payment for Reservations
+ */
 public class Payment {
 
 	private String method;
@@ -7,10 +14,20 @@ public class Payment {
 	private String status;
 	private int reservationID;
 	
+	/**
+	 * Default Constructor
+	 */
 	public Payment() {
 		
 	}
 	
+	/**
+	 * Parameterized Constructor
+	 * @param method of the Payment
+	 * @param amount to be paid
+	 * @param status of the payment
+	 * @param reservationID 
+	 */
 	public Payment (String method, double amount, String status, int reservationID) {
 		this.method = method;
 		this.amount = amount;

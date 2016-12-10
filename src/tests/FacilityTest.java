@@ -12,6 +12,14 @@ import org.junit.Test;
 
 import system.*;
 
+/**
+ * 
+ * @author Thai Kha Le, Pawel Paszki
+ * @version 10/12/2016
+ * 
+ * This test class tests all functions from Facility class
+ */
+
 public class FacilityTest {
 
 	private Facility facility;
@@ -30,11 +38,9 @@ public class FacilityTest {
 		defaultSpecialRequests.add(SpecialRequest.COT);
 	}
 
-	/*
-	 * This test tests add method without index. before adding an element size
-	 * of the ArrayList is checked and after adding one element this check is
-	 * performed again to make sure that the list's size has increased by one
-	 * element
+	/**
+	 * Availability is checked by checking size of returned ArrayList of Rooms
+	 * after reservations are made
 	 */
 	@Test
 	public void testCheckAvailability() {
@@ -64,6 +70,10 @@ public class FacilityTest {
 		assertEquals(roomsC.get(0).getNumber(), 2);
 	}
 
+	/**
+	 * Make reservation is checked by checking if dates for made reservations are
+	 * as expected and if number of days booked for given room matches expected values
+	 */
 	@Test
 	public void testMakeReservation() {
 		Room room1 = new Room(2, 1);
@@ -98,6 +108,9 @@ public class FacilityTest {
 		assertEquals(reservedGuest.getPhoneNumber(), "051-123456");
 	}
 
+	/**
+	 * Reservation details are tested by checking returned String with expected value
+	 */
 	@Test
 	public void testGetReservationDetails1Guest() {
 		Room room1 = new Room(2, 1);
@@ -110,6 +123,9 @@ public class FacilityTest {
 		assertEquals(reservationInfo, "Booked from: 1/1/2017 to: 10/1/2017(cost per night: 50.0)");
 	}
 
+	/**
+	 * Reservation details are tested by checking returned String with expected value
+	 */
 	@Test
 	public void testGetReservationDetails2Guest() {
 		Room room1 = new Room(2, 1);
@@ -135,6 +151,9 @@ public class FacilityTest {
 		assertEquals(reservationInfo2, "Booked from: 1/2/2017 to: 2/2/2017(cost per night: 50.0)");
 	}
 
+	/**
+	 * Reservation details are tested by checking returned String with expected value
+	 */
 	@Test
 	public void testGetReservationDetailsNoGuest() {
 		Room room1 = new Room(2, 1);
@@ -147,6 +166,9 @@ public class FacilityTest {
 		assertEquals(reservationInfo, "No reservations for: jbloggs@gmail.com");
 	}
 
+	/**
+	 * Removed reservation details are tested by checking returned String with expected value
+	 */
 	@Test
 	public void testRemove1Reservation() {
 		Room room1 = new Room(2, 1);
@@ -167,6 +189,9 @@ public class FacilityTest {
 		assertEquals(removeNonExistentReservation, "No reservations for: jbloggs@gmail.com");
 	}
 
+	/**
+	 * Removed reservation details are tested by checking returned String with expected value
+	 */
 	@Test
 	public void testRemove2Reservations() {
 		Room room1 = new Room(2, 1);
@@ -206,6 +231,9 @@ public class FacilityTest {
 		assertEquals(removeNonExistentReservation2, "No reservations for: abc@email.com");
 	}
 
+	/**
+	 * Removed reservation details are tested by checking returned String with expected value
+	 */
 	@Test
 	public void testRemoveReservationNoReservation() {
 		Room room1 = new Room(2, 1);
@@ -217,6 +245,10 @@ public class FacilityTest {
 		assertEquals(reservationInfo, "No reservations for: jbloggs@gmail.com");
 	}
 	
+	/**
+	 * Update Guest details is tested by confirming that the Guest details for 
+	 * given booking number are changed
+	 */
 	@Test
 	public void testUpdateGuestForReservation() {
 		Room room1 = new Room(2,1);
@@ -240,6 +272,10 @@ public class FacilityTest {
 		assertEquals(reservedGuest.getPhoneNumber(), updatedGuest.getPhoneNumber());
 	}
 	
+	/**
+	 * Update Special Requests is tested by confirming that Special Requests for 
+	 * given booking number are changed
+	 */
 	@Test
 	public void testUpdateSpecialRequests() {
 		Room room1 = new Room(2,1);
@@ -257,6 +293,9 @@ public class FacilityTest {
 		
 		HashSet<SpecialRequest> newSpecialRequests = room1.getReservationList().get(0).getSpecialRequests();
 		assertEquals(newSpecialRequests.size(), 2);
+		assertTrue(newSpecialRequests.contains(SpecialRequest.NONSMOKING));
+		assertTrue(newSpecialRequests.contains(SpecialRequest.BALCONY));
+		assertTrue(!newSpecialRequests.contains(SpecialRequest.COT));
 	}
 	
 }

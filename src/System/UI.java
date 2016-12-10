@@ -1,6 +1,5 @@
 package system;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.Iterator;
@@ -41,7 +40,7 @@ public class UI {
 				System.out.println("  2) Make Reservation");
 				System.out.println("  3) Get Reservation Details");
 				System.out.println("  4) Update Personal Details for Reservation");
-				System.out.println("  5) Add Special Requests for Reservation");
+				System.out.println("  5) Add Special Requests to Reservation");
 				System.out.println("  6) Remove reservation");
 				System.out.println("  0) Exit");
 				System.out.print("==>> ");
@@ -111,16 +110,11 @@ public class UI {
 			// to the terminal window
 			System.out.println("\nPress any key to continue...");
 			input.nextLine();
-			input.nextLine(); // this second read is required - bug in
-			// Scanner
-			// class; a String read is ignored straight
-			// after reading an int.
-
-			// display the main menu again
+			input.nextLine(); 
 			option = mainMenu();
 		}
 
-		// the user chose option 0, so exit the program
+		// if 0 is chosen - exit the program
 		System.out.println("Exiting... bye");
 		System.exit(0);
 	}
@@ -237,9 +231,6 @@ public class UI {
 	}
 
 	private void checkAvailability(ReservationQuery query) {
-		ArrayList<Room> currentListOfAvailRooms = new ArrayList<>();
-		Date startDate = null;
-		Date endDate = null;
 
 		System.out.print("Please enter month of startDate: ");
 		int startMonth = getNumberInput();
@@ -250,26 +241,8 @@ public class UI {
 		System.out.print("Please enter day of endDate: ");
 		int endDay = getNumberInput();
 
-		if ((endDay >= startDay && endMonth == startMonth) || endMonth > startMonth) {
-			try {
-				startDate = new Date(startDay, startMonth, 2017);
-				endDate = new Date(endDay, endMonth, 2017);
-				currentListOfAvailRooms = facility.checkAvailability(startDate, endDate);
-				if (currentListOfAvailRooms.size() > 0) {
-					System.out.println(currentListOfAvailRooms.size() + " rooms available");
-					if (query != null) {
-						query.setStartDate(startDate);
-						query.setEndDate(endDate);
-						query.setRoomNumber(currentListOfAvailRooms.get(0).getNumber());
-					}
-				}
-			} catch (InputMismatchException e) {
-				System.out.println("Incorrect date(s)");
-			}
-		} else {
-			System.out.println("Incorrect dates were provided");
-		}
-
+		facility.checkAvailability(query, startMonth, startDay, endMonth, endDay);
+		
 	}
 
 	private Payment getPayment(double amount) {

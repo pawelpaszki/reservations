@@ -27,7 +27,7 @@ public class Facility {
 	 * @param endDate - end date of availability period
 	 * @return list of available rooms (may be empty)
 	 */
-	public ArrayList<Room> checkAvailability(Date startDate, Date endDate) {
+	public ArrayList<Room> getAvailableRooms(Date startDate, Date endDate) {
 		ArrayList<Room> availableRooms = new ArrayList<Room>();
 		for (int i = 0; i < rooms.size(); i++) {
 			if (rooms.get(i).isAvailable(startDate, endDate)) {
@@ -90,7 +90,7 @@ public class Facility {
 			try {
 				startDate = new Date(startDay, startMonth, 2017);
 				endDate = new Date(endDay, endMonth, 2017);
-				currentListOfAvailRooms = checkAvailability(startDate, endDate);
+				currentListOfAvailRooms = getAvailableRooms(startDate, endDate);
 				if (currentListOfAvailRooms.size() > 0) {
 					System.out.println(currentListOfAvailRooms.size() + " rooms available");
 					if (query != null) {

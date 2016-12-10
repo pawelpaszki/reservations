@@ -55,10 +55,10 @@ public class FacilityTest {
 		room2.makeReservation(defaultGuest, new Date(3, 3, 2017), new Date(4, 4, 2017), defaultPayment,
 				defaultSpecialRequests);
 
-		ArrayList<Room> roomsA = facility.checkAvailability(new Date(2, 1, 2017), new Date(30, 1, 2017));
-		ArrayList<Room> roomsB = facility.checkAvailability(new Date(2, 1, 2017), new Date(28, 2, 2017));
-		ArrayList<Room> roomsC = facility.checkAvailability(new Date(1, 1, 2017), new Date(1, 1, 2017));
-		ArrayList<Room> roomsD = facility.checkAvailability(new Date(2, 1, 2017), new Date(1, 1, 2017));
+		ArrayList<Room> roomsA = facility.getAvailableRooms(new Date(2, 1, 2017), new Date(30, 1, 2017));
+		ArrayList<Room> roomsB = facility.getAvailableRooms(new Date(2, 1, 2017), new Date(28, 2, 2017));
+		ArrayList<Room> roomsC = facility.getAvailableRooms(new Date(1, 1, 2017), new Date(1, 1, 2017));
+		ArrayList<Room> roomsD = facility.getAvailableRooms(new Date(2, 1, 2017), new Date(1, 1, 2017));
 
 		assertEquals(roomsA.size(), 1);
 		assertTrue(roomsB.size() == 1);

@@ -51,7 +51,6 @@ public class Facility {
 		String roomInfo = "No reservations for: " + emailAddress;
 		if (bookingID != -1) {
 			LinkedHashMap<Integer, Integer> bookingIDs = getBookingIdsForGuest(emailAddress);
-			
 			if (bookingIDs.size() > 0 && bookingIDs.containsKey(bookingID)) {
 				roomInfo = getRoom(bookingIDs.get(bookingID)).getReservationsDetails(bookingID);
 			}
@@ -88,7 +87,15 @@ public class Facility {
 
 	public void updateGuest(String emailAddress, int bookingID, Guest updatedGuest) {
 		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
-		if (ids.containsKey(bookingID))
+		if (ids.containsKey(bookingID)) {
 			getRoom(ids.get(bookingID)).updateGuest(bookingID, updatedGuest);
+		}
+	}
+	
+	public void updateSpecialRequests(String emailAddress, int bookingID, HashSet<SpecialRequest> specialRequests) {
+		HashMap<Integer, Integer> ids = getBookingIdsForGuest(emailAddress);
+		if (ids.containsKey(bookingID)) {
+			getRoom(ids.get(bookingID)).updateSpecialRequests(bookingID, specialRequests);
+		}
 	}
 }

@@ -21,7 +21,7 @@ public class Date {
 			this.month = month;
 			this.year = year;
 		} else {
-			System.out.println("***");
+			//System.out.println("***");
 			System.out.println(day + "/" + month + "/" + year);
 			throw new InputMismatchException("incorrect data");
 		}

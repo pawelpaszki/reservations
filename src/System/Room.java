@@ -93,12 +93,10 @@ public class Room {
 		Date endDate = new Date(31, 12, 2017);
 		for (int i = 0; i < reservationList.size(); i++) {
 			if (reservationList.get(i).getBookingId() == bookingID) {
-				System.out.println(reservationList.get(i).getDate());
 				// start of the sublist whose items have the same bookID as the
 				// bookingID argument
 				startDate = reservationList.get(i).getDate();
 				while (++i < reservationList.size() && reservationList.get(i).getBookingId() == bookingID) {
-					System.out.println(reservationList.get(i).getDate());
 				}
 				endDate = reservationList.get(--i).getDate();
 				i = reservationList.size() - 1;
@@ -122,12 +120,28 @@ public class Room {
 	public void updateGuest(int bookingID, Guest guest) {
 		for (Reservation reservation: reservationList) {
 			if (reservation.getBookingId() == bookingID) {
-				System.out.println("true");
 				reservation.setGuest(guest);
-				System.out.println();
 			}
 		}
 	}
+	
+	public void updateSpecialRequests(int bookingID, HashSet<SpecialRequest> specialRequests) {
+		for (Reservation reservation: reservationList) {
+			if (reservation.getBookingId() == bookingID) {
+				reservation.setSpecialRequests(specialRequests);
+			}
+		}
+	}
+	
+	public HashSet<SpecialRequest> getSpecialRequests(int bookingID) {
+		for (Reservation reservation: reservationList) {
+			if (reservation.getBookingId() == bookingID) {
+				return reservation.getSpecialRequests();
+			}
+		}
+		return null;
+	}
+	
 	
 	/**
 	 * @return the reservationList

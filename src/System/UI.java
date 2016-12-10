@@ -72,8 +72,8 @@ public class UI {
 				break;
 			case 3:
 				String emailAddress = getValidEmailAddress();
-				System.out.println(facility.getReservationDetails(emailAddress,
-						promptForBookingID(facility, emailAddress)));
+				System.out.println(
+						facility.getReservationDetails(emailAddress, promptForBookingID(facility, emailAddress)));
 				break;
 			case 4:
 				String emailForGuestToUpdate = getValidEmailAddress();
@@ -86,7 +86,15 @@ public class UI {
 				}
 				break;
 			case 5:
-
+				String emailaddressToUpdateRequests = getValidEmailAddress();
+				reservationToUpdate = promptForBookingID(facility, emailaddressToUpdateRequests);
+				if (reservationToUpdate == -1) {
+					System.out.println("No bookings to update");
+				} else {
+					int roomNumber = facility.getBookingIdsForGuest(emailaddressToUpdateRequests).get(reservationToUpdate);
+					HashSet<SpecialRequest> specialRequests = facility.getRoom(roomNumber).getSpecialRequests(reservationToUpdate);
+					facility.updateSpecialRequests(emailaddressToUpdateRequests, reservationToUpdate, specialRequests);
+				}
 				break;
 			case 6:
 				String emailForRemoveReservation = getValidEmailAddress();
@@ -152,13 +160,17 @@ public class UI {
 		if (roomNumber != -1) {
 			Payment payment = getPayment(facility.getRoom(roomNumber).getCost());
 			facility.registerReservation(roomNumber, getGuestInformation(), query.getStartDate(), query.getEndDate(),
-					payment, getSpecialRequests());
+					payment, getSpecialRequests(null));
 		}
 	}
 
-	private HashSet<SpecialRequest> getSpecialRequests() {
+	private HashSet<SpecialRequest> getSpecialRequests(HashSet<SpecialRequest> requests) {
 		HashSet<SpecialRequest> specialRequests = new HashSet<SpecialRequest>();
-		System.out.println("Do you require any special requests? Type yes to continue");
+		if (requests != null) {
+			specialRequests = requests;
+		} else {
+			System.out.println("Do you require any special requests? Type yes to continue");
+		}
 		String response = input.nextLine();
 		if (response.equalsIgnoreCase("yes")) {
 			boolean finished = false;
@@ -169,13 +181,15 @@ public class UI {
 						System.out.println(sr.name());
 					}
 				}
+				System.out.print(">");
+				response = input.nextLine();
 				if (response.equalsIgnoreCase("end")) {
 					finished = true;
 				} else {
 					if (response.equalsIgnoreCase("COT")) {
 						specialRequests.add(SpecialRequest.COT);
-					} else if (response.equalsIgnoreCase("BALKONY")) {
-						specialRequests.add(SpecialRequest.BALKONY);
+					} else if (response.equalsIgnoreCase("BALCONY")) {
+						specialRequests.add(SpecialRequest.BALCONY);
 					} else if (response.equalsIgnoreCase("NONSMOKING")) {
 						specialRequests.add(SpecialRequest.NONSMOKING);
 					}
@@ -259,7 +273,6 @@ public class UI {
 
 	private Payment getPayment(double amount) {
 		Payment payment = new Payment();
-
 		int paymentType;
 		do {
 			try {

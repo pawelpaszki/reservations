@@ -238,10 +238,25 @@ public class FacilityTest {
 		assertEquals(reservedGuest.getName(), updatedGuest.getName());
 		assertEquals(reservedGuest.getEmailAddress(), updatedGuest.getEmailAddress());
 		assertEquals(reservedGuest.getPhoneNumber(), updatedGuest.getPhoneNumber());
-		
 	}
 	
-	
-	
+	@Test
+	public void testUpdateSpecialRequests() {
+		Room room1 = new Room(2,1);
+		facility.addRoom(room1);
+		room1.makeReservation(defaultGuest, new Date(1, 1, 2017), new Date(4, 1, 2017), defaultPayment,
+				defaultSpecialRequests);
+		HashSet<SpecialRequest> specialRequests = room1.getReservationList().get(0).getSpecialRequests();
+		assertEquals(specialRequests.size(), 1);
+		
+		HashSet<SpecialRequest> updatedSpecialRequests = new HashSet<SpecialRequest>();
+		updatedSpecialRequests.remove(SpecialRequest.COT);
+		updatedSpecialRequests.add(SpecialRequest.BALCONY);
+		updatedSpecialRequests.add(SpecialRequest.NONSMOKING);
+		facility.updateSpecialRequests(defaultGuest.getEmailAddress(), 1, updatedSpecialRequests);
+		
+		HashSet<SpecialRequest> newSpecialRequests = room1.getReservationList().get(0).getSpecialRequests();
+		assertEquals(newSpecialRequests.size(), 2);
+	}
 	
 }

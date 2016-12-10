@@ -1,5 +1,5 @@
 package system;
 
 public enum SpecialRequest {
-	COT, BALKONY, NONSMOKING
+	COT, BALCONY, NONSMOKING
 }
